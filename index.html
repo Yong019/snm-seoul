@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sleep No More Seoul — 공연 기록</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0b;
+  --surface: #111113;
+  --card: #161618;
+  --card2: #1c1c1f;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.13);
+  --gold: #c8a96e;
+  --gold-dim: rgba(200,169,110,0.3);
+  --gold-bg: rgba(200,169,110,0.1);
+  --text: #e8e4dc;
+  --muted: rgba(232,228,220,0.45);
+  --muted2: rgba(232,228,220,0.25);
+  --red: rgba(224,85,85,0.85);
+  --green: #4caf7d;
+  --blue: rgba(140,180,230,0.8);
+  --serif: 'Cormorant Garamond', serif;
+  --mono: 'DM Mono', monospace;
+}
+
+html { background: var(--bg); }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.app-wrap { max-width: 960px; margin: 0 auto; padding: 0 0 80px; }
+
+/* ── HEADER ── */
+header {
+  padding: 32px 32px 24px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 20% 60%, rgba(200,169,110,0.06) 0%, transparent 55%);
+  pointer-events: none;
+}
+.header-top { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+h1 {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+}
+.header-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.18em; text-transform: uppercase; }
+
+.sheet-row { display: flex; gap: 8px; align-items: center; }
+.sheet-input {
+  flex: 1; max-width: 480px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--mono); font-size: 11px;
+  padding: 7px 11px; border-radius: 4px; outline: none;
+  transition: border-color 0.2s;
+}
+.sheet-input:focus { border-color: var(--gold-dim); }
+.btn {
+  background: var(--gold-bg); border: 1px solid var(--gold-dim);
+  color: var(--gold); font-family: var(--mono); font-size: 11px;
+  padding: 7px 16px; border-radius: 4px; cursor: pointer;
+  transition: background 0.2s; white-space: nowrap; letter-spacing: 0.06em;
+}
+.btn:hover { background: rgba(200,169,110,0.2); }
+.btn-sm { padding: 4px 10px; font-size: 10px; }
+.status { font-size: 10px; color: var(--muted); margin-top: 7px; min-height: 14px; }
+.status.ok  { color: var(--green); }
+.status.err { color: var(--red); }
+.status.loading { color: var(--gold); }
+
+/* ── NAV TABS ── */
+nav {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  overflow-x: auto;
+}
+nav::-webkit-scrollbar { display: none; }
+.tab {
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--muted); font-family: var(--mono); font-size: 11px;
+  padding: 13px 17px; cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  letter-spacing: 0.08em; white-space: nowrap;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── BODY ── */
+.body { padding: 24px 32px; }
+.pane { display: none; }
+.pane.active { display: block; }
+
+/* ── STATS GRID ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px; margin-bottom: 26px;
+}
+.stat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px 16px;
+}
+.stat-label { font-size: 9px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
+.stat-value { font-family: var(--serif); font-size: 30px; font-weight: 400; color: var(--gold); line-height: 1; }
+.stat-value.sm { font-size: 22px; }
+
+/* ── SECTION TITLE ── */
+.sec { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.sec-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.sec-row .sec { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+/* ── BAR CHART ── */
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.bar-name { font-size: 11px; color: var(--text); min-width: 72px; text-align: right; }
+.bar-track { flex: 1; height: 5px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, rgba(200,169,110,0.45), rgba(200,169,110,0.9)); border-radius: 3px; transition: width 0.5s ease; }
+.bar-fill.my { background: linear-gradient(90deg, rgba(100,170,220,0.45), rgba(100,170,220,0.9)); }
+.bar-num { font-size: 11px; color: var(--gold); min-width: 30px; text-align: right; font-family: var(--serif); }
+.bar-num.my { color: var(--blue); }
+
+/* ── SEARCH & SORT ── */
+.search {
+  width: 100%; background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--mono); font-size: 12px;
+  padding: 8px 12px; border-radius: 4px; outline: none; margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+.search:focus { border-color: var(--gold-dim); }
+.sort-row { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.sort-btn {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  font-family: var(--mono); font-size: 10px; padding: 4px 10px;
+  border-radius: 3px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.08em;
+}
+.sort-btn:hover, .sort-btn.active { border-color: var(--gold-dim); color: var(--gold); }
+
+/* ── ACTOR GRID ── */
+.actor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.actor-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative; overflow: hidden;
+}
+.actor-card:hover { border-color: var(--gold-dim); background: rgba(200,169,110,0.04); }
+.actor-card.checkout { border-color: rgba(224,85,85,0.3); }
+.actor-card.checkout::after {
+  content: 'CHECKOUT'; position: absolute; top: 8px; right: 8px;
+  font-size: 8px; letter-spacing: 0.12em; color: var(--red); opacity: 0.8;
+}
+.actor-count { font-family: var(--serif); font-size: 26px; color: var(--gold); font-weight: 300; line-height: 1; margin-bottom: 4px; }
+.actor-count .unit { font-size: 12px; color: var(--muted); margin-left: 2px; }
+.actor-name { font-family: var(--serif); font-size: 16px; color: var(--text); margin-bottom: 6px; }
+.my-count-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; color: var(--blue); margin-top: 4px;
+}
+
+/* ── BADGES ── */
+.badge {
+  display: inline-block; font-size: 9px; padding: 2px 6px;
+  border-radius: 3px; letter-spacing: 0.1em; margin: 2px 2px 0 0;
+}
+.badge.checkin  { background: rgba(26,92,58,0.3); border: 1px solid rgba(76,175,125,0.3); color: var(--green); }
+.badge.checkout { background: rgba(139,32,32,0.3); border: 1px solid rgba(224,85,85,0.3); color: var(--red); }
+.badge.gold     { background: var(--gold-bg); border: 1px solid var(--gold-dim); color: var(--gold); }
+.badge.blue     { background: rgba(100,170,220,0.1); border: 1px solid rgba(100,170,220,0.3); color: var(--blue); }
+
+/* ── ROLE CARDS ── */
+.role-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; margin-bottom: 10px; }
+.role-title { font-family: var(--serif); font-size: 18px; color: var(--gold); margin-bottom: 10px; }
+.role-actor-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 11px;
+}
+.role-actor-row:last-child { border-bottom: none; }
+.role-type { color: var(--muted); font-size: 10px; margin-left: 8px; }
+.role-cnt { color: var(--gold); }
+
+/* ── SCHEDULE ── */
+.perf-row {
+  display: grid; grid-template-columns: 42px 1fr auto;
+  align-items: center; gap: 12px;
+  padding: 8px 10px; border-radius: 4px; margin-bottom: 3px;
+  transition: background 0.15s; cursor: pointer;
+}
+.perf-row:hover { background: rgba(255,255,255,0.03); }
+.perf-row.my-perf { background: rgba(100,170,220,0.05); border-left: 2px solid rgba(100,170,220,0.4); padding-left: 8px; }
+.perf-num { font-family: var(--serif); font-size: 20px; color: var(--muted2); text-align: right; line-height: 1; }
+.perf-date { font-size: 12px; color: var(--text); }
+.perf-time { font-size: 10px; margin-top: 1px; }
+.perf-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.seen-btn {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  font-family: var(--mono); font-size: 9px; padding: 3px 8px;
+  border-radius: 3px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.seen-btn:hover, .seen-btn.seen { border-color: rgba(100,170,220,0.4); color: var(--blue); background: rgba(100,170,220,0.08); }
+
+/* ── MILESTONE ── */
+.ms-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 12px; background: var(--card);
+  border-radius: 5px; margin-bottom: 6px; border: 1px solid var(--border);
+}
+.ms-icon { font-family: var(--serif); font-size: 20px; color: var(--gold); min-width: 44px; text-align: center; }
+.ms-info { flex: 1; }
+.ms-name { font-size: 12px; color: var(--text); }
+.ms-detail { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ── MY STATS PANE ── */
+.my-stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px; margin-bottom: 26px;
+}
+.seen-log-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-radius: 4px; margin-bottom: 3px;
+  font-size: 12px; transition: background 0.15s;
+}
+.seen-log-row:hover { background: rgba(255,255,255,0.03); }
+.seen-log-num { font-family: var(--serif); font-size: 18px; color: var(--muted2); min-width: 36px; text-align: right; }
+.del-btn {
+  background: none; border: none; color: var(--muted2);
+  cursor: pointer; font-size: 14px; padding: 0 4px; transition: color 0.15s;
+}
+.del-btn:hover { color: var(--red); }
+.my-chart-wrap { position: relative; height: 220px; margin-bottom: 24px; }
+.empty { padding: 36px 0; text-align: center; font-size: 12px; color: var(--muted); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.88); z-index: 200;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid rgba(200,169,110,0.22);
+  border-radius: 8px; padding: 26px; max-width: 540px; width: 100%;
+  max-height: 82vh; overflow-y: auto; position: relative;
+}
+.modal::-webkit-scrollbar { width: 4px; }
+.modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.modal-close {
+  position: absolute; top: 12px; right: 14px;
+  background: none; border: none; color: var(--muted);
+  font-size: 18px; cursor: pointer; line-height: 1;
+}
+.modal-close:hover { color: var(--text); }
+.modal-name { font-family: var(--serif); font-size: 26px; font-weight: 300; color: var(--gold); margin-bottom: 4px; }
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.role-item { display: flex; justify-content: space-between; align-items: center; font-size: 11px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.role-item:last-child { border-bottom: none; }
+.note-input {
+  width: 100%; background: var(--card); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--mono); font-size: 11px;
+  padding: 8px 10px; border-radius: 4px; outline: none; resize: vertical;
+  min-height: 64px; transition: border-color 0.2s; margin-top: 6px;
+}
+.note-input:focus { border-color: var(--gold-dim); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  header, .body { padding-left: 18px; padding-right: 18px; }
+  nav { padding: 0 18px; }
+  h1 { font-size: 24px; }
+  .actor-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <h1 id="admin-trigger" style="cursor:default;user-select:none">Sleep No More Seoul</h1>
+    <span class="header-sub">공연 기록 아카이브</span>
+  </div>
+  <!-- admin panel: hidden by default -->
+  <div id="admin-panel" style="display:none;margin-top:12px">
+    <div class="sheet-row">
+      <input class="sheet-input" id="sheetId" placeholder="구글 시트 ID 입력..." />
+      <button class="btn" onclick="adminSave()">저장 & 적용</button>
+      <button class="btn btn-sm" style="border-color:var(--border);color:var(--muted)" onclick="closeAdmin()">닫기</button>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-top:6px">시트 ID는 브라우저에 저장됩니다. 다음 방문부터 자동으로 불러옵니다.</div>
+  </div>
+  <div class="status" id="status"></div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <button class="tab active" onclick="switchTab('overview',this)">개요</button>
+  <button class="tab" onclick="switchTab('actors',this)">배우</button>
+  <button class="tab" onclick="switchTab('roles',this)">역할</button>
+  <button class="tab" onclick="switchTab('schedule',this)">공연 일정</button>
+  <button class="tab" onclick="switchTab('milestones',this)">기념 공연</button>
+  <button class="tab" onclick="switchTab('my',this)">내 관람 기록 ✦</button>
+</nav>
+
+<!-- BODY -->
+<div class="body">
+
+  <!-- OVERVIEW -->
+  <div id="pane-overview" class="pane active">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">총 공연 횟수</div><div class="stat-value" id="s-shows">—</div></div>
+      <div class="stat-card"><div class="stat-label">등록 배우</div><div class="stat-value" id="s-actors">—</div></div>
+      <div class="stat-card"><div class="stat-label">활성 배우</div><div class="stat-value" id="s-active">—</div></div>
+      <div class="stat-card"><div class="stat-label">체크아웃</div><div class="stat-value" id="s-co">—</div></div>
+      <div class="stat-card"><div class="stat-label">내 관람 횟수</div><div class="stat-value sm" id="s-my" style="color:var(--blue)">0</div></div>
+    </div>
+    <div class="sec">출연 횟수 TOP 10</div>
+    <div id="ov-bars"></div>
+  </div>
+
+  <!-- ACTORS -->
+  <div id="pane-actors" class="pane">
+    <input class="search" id="actor-q" placeholder="배우 이름 검색..." oninput="filterActors()" />
+    <div class="sort-row">
+      <button class="sort-btn active" onclick="setActorSort('count',this)">횟수순</button>
+      <button class="sort-btn" onclick="setActorSort('name',this)">이름순</button>
+      <button class="sort-btn" onclick="setActorSort('checkin',this)">첫공순</button>
+    </div>
+    <div class="actor-grid" id="actor-grid"></div>
+  </div>
+
+  <!-- ROLES -->
+  <div id="pane-roles" class="pane">
+    <input class="search" id="role-q" placeholder="역할 이름 검색..." oninput="filterRoles()" />
+    <div id="roles-list"></div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div id="pane-schedule" class="pane">
+    <div class="sec-row">
+      <span class="sec">전체 공연 일정</span>
+      <label style="font-size:10px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px">
+        <input type="checkbox" id="only-seen" onchange="renderSchedule()" style="accent-color:var(--gold)" />
+        내가 본 공연만
+      </label>
+    </div>
+    <div id="schedule-list"></div>
+  </div>
+
+  <!-- MILESTONES -->
+  <div id="pane-milestones" class="pane">
+    <div class="sec">달성된 기념 공연</div>
+    <div id="ms-done"></div>
+    <div class="divider"></div>
+    <div class="sec" style="margin-top:16px">다음 기념 공연 예정</div>
+    <div id="ms-upcoming"></div>
+  </div>
+
+  <!-- MY RECORDS -->
+  <div id="pane-my" class="pane">
+    <div class="my-stats-grid">
+      <div class="stat-card"><div class="stat-label">총 관람 횟수</div><div class="stat-value sm" id="my-total" style="color:var(--blue)">0</div></div>
+      <div class="stat-card"><div class="stat-label">낮공연</div><div class="stat-value sm" id="my-day" style="color:var(--blue)">0</div></div>
+      <div class="stat-card"><div class="stat-label">밤공연</div><div class="stat-value sm" id="my-night" style="color:var(--blue)">0</div></div>
+      <div class="stat-card"><div class="stat-label">첫 관람</div><div class="stat-value" id="my-first" style="font-size:14px;color:var(--gold)">—</div></div>
+      <div class="stat-card"><div class="stat-label">최근 관람</div><div class="stat-value" id="my-last" style="font-size:14px;color:var(--gold)">—</div></div>
+    </div>
+
+    <div class="sec">자주 본 배우 TOP 10</div>
+    <div id="my-actor-bars" style="margin-bottom:26px"></div>
+
+    <div class="sec">관람한 공연 목록</div>
+    <div id="my-log"></div>
+  </div>
+
+</div><!-- /body -->
+</div><!-- /app-wrap -->
+
+<!-- ACTOR MODAL -->
+<div class="modal-overlay" id="actor-modal" onclick="closeModalOuter(event,'actor-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('actor-modal')">✕</button>
+    <div id="actor-modal-body"></div>
+  </div>
+</div>
+
+<!-- SHOW MODAL (seen record) -->
+<div class="modal-overlay" id="show-modal" onclick="closeModalOuter(event,'show-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('show-modal')">✕</button>
+    <div id="show-modal-body"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════
+   DATA
+═══════════════════════════════ */
+const MILESTONES = [50, 100, 150, 200, 250, 300, 400, 500];
+let DATA = { shows: [], actors: [], roles: [], actorSort: 'count' };
+
+/* localStorage: my seen records
+   shape: { [showNum]: { seen: bool, note: string } }
+*/
+function getMyRecords() {
+  try { return JSON.parse(localStorage.getItem('snm_seen') || '{}'); }
+  catch { return {}; }
+}
+function saveMyRecords(r) { localStorage.setItem('snm_seen', JSON.stringify(r)); }
+function toggleSeen(num) {
+  const r = getMyRecords();
+  if (r[num]?.seen) { delete r[num]; } else { r[num] = { seen: true, note: r[num]?.note || '' }; }
+  saveMyRecords(r); renderAll();
+}
+function saveNote(num, note) {
+  const r = getMyRecords();
+  if (!r[num]) r[num] = { seen: true, note };
+  else r[num].note = note;
+  saveMyRecords(r);
+}
+
+/* ═══════════════════════════════
+   DEMO DATA
+═══════════════════════════════ */
+const DEMO = {
+  shows: [
+    {num:1,date:'2025.07.24',time:'밤'},{num:2,date:'2025.07.26',time:'낮'},
+    {num:3,date:'2025.07.26',time:'밤'},{num:4,date:'2025.07.30',time:'밤'},
+    {num:5,date:'2025.08.01',time:'밤'},{num:6,date:'2025.08.02',time:'낮'},
+    {num:7,date:'2025.08.02',time:'밤'},{num:8,date:'2025.08.06',time:'밤'},
+    {num:9,date:'2025.08.07',time:'밤'},{num:10,date:'2025.08.09',time:'낮'},
+    {num:11,date:'2025.08.09',time:'밤'},{num:12,date:'2025.08.13',time:'밤'},
+    {num:13,date:'2025.08.14',time:'밤'},{num:14,date:'2025.08.15',time:'밤'},
+    {num:15,date:'2025.08.16',time:'낮'},{num:16,date:'2025.08.16',time:'밤'},
+    {num:17,date:'2025.08.17',time:'낮'},{num:18,date:'2025.08.21',time:'밤'},
+    {num:19,date:'2025.08.22',time:'밤'},{num:20,date:'2025.08.23',time:'낮'},
+    {num:21,date:'2025.08.23',time:'밤'},{num:22,date:'2025.08.24',time:'낮'},
+    {num:23,date:'2025.08.27',time:'밤'},{num:24,date:'2025.08.28',time:'밤'},
+    {num:25,date:'2025.08.29',time:'밤'},{num:26,date:'2025.08.30',time:'밤'},
+    {num:27,date:'2025.08.31',time:'낮'},{num:28,date:'2025.09.03',time:'밤'},
+    {num:29,date:'2025.09.04',time:'밤'},{num:30,date:'2025.09.05',time:'밤'},
+    {num:31,date:'2025.09.06',time:'낮'},{num:32,date:'2025.09.06',time:'밤'},
+    {num:33,date:'2025.09.07',time:'낮'},{num:34,date:'2025.09.10',time:'밤'},
+    {num:35,date:'2025.09.11',time:'밤'},{num:36,date:'2025.09.12',time:'밤'},
+    {num:37,date:'2025.09.13',time:'낮'},{num:38,date:'2025.09.13',time:'밤'},
+    {num:39,date:'2025.09.14',time:'낮'},{num:40,date:'2025.09.17',time:'밤'},
+    {num:41,date:'2025.09.18',time:'밤'},{num:42,date:'2025.09.19',time:'밤'},
+    {num:43,date:'2025.09.20',time:'낮'},{num:44,date:'2025.09.20',time:'밤'},
+    {num:45,date:'2025.09.21',time:'낮'},{num:46,date:'2025.09.24',time:'밤'},
+    {num:47,date:'2025.09.25',time:'밤'},{num:48,date:'2025.09.26',time:'밤'},
+    {num:49,date:'2025.09.27',time:'낮'},{num:50,date:'2025.09.27',time:'밤'}
+  ],
+  actors: [
+    {name:'가브리엘',count:5,checkout:false,checkinNum:2,checkinDate:'2025.07.26',checkinTime:'낮'},
+    {name:'김도현',count:4,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'김수정',count:46,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'김영은',count:40,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'김태양',count:50,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤',milestones:[{n:50,date:'2025.09.27',time:'밤'}]},
+    {name:'노바',count:35,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'니콜라스',count:42,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'데이비드',count:19,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'마야',count:23,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'매트',count:23,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'박상하',count:48,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'샘',count:49,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'샤롤',count:14,checkout:false,checkinNum:2,checkinDate:'2025.07.26',checkinTime:'낮'},
+    {name:'션',count:30,checkout:false,checkinNum:3,checkinDate:'2025.07.26',checkinTime:'밤'},
+    {name:'손대민',count:23,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'스티비',count:27,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'신상미',count:43,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'앨리G',count:48,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'앨리C',count:47,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'엘레니',count:0,checkout:false,checkinNum:null,checkinDate:null,checkinTime:null},
+    {name:'오드리',count:19,checkout:true,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤',checkoutDate:'2025.08.27',checkoutShowNum:23},
+    {name:'오마',count:46,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'이선재',count:41,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'장준혁',count:46,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'정필균',count:11,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'제시카',count:39,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'조던',count:34,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'주드',count:44,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'총명주',count:39,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'칼',count:4,checkout:true,checkinNum:5,checkinDate:'2025.08.01',checkinTime:'밤',checkoutDate:'2025.08.27',checkoutShowNum:23},
+    {name:'크리스',count:44,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'펀',count:44,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'표혜인',count:25,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'한세인',count:44,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'허준환',count:38,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
+    {name:'헤일리 성',count:7,checkout:false,checkinNum:9,checkinDate:'2025.08.07',checkinTime:'밤'},
+    {name:'김예슬',count:0,checkout:false,checkinNum:null,checkinDate:null,checkinTime:null}
+  ],
+  roles: [
+    {name:'맥베스',actors:[{name:'니콜라스',type:'레귤러/PINK',count:20},{name:'크리스',type:'레귤러/BLUE',count:23},{name:'매트',type:'스윙',count:0},{name:'션',type:'스윙',count:7},{name:'데이비드',type:'스윙',count:0}]},
+    {name:'레이디 맥베스',actors:[{name:'마야',type:'레귤러/PINK',count:21},{name:'앨리G',type:'레귤러/BLUE',count:25},{name:'헤일리 성',type:'스윙',count:0},{name:'가브리엘',type:'스윙',count:2}]},
+    {name:'맥더프',actors:[{name:'총명주',type:'레귤러/PINK',count:20},{name:'장준혁',type:'레귤러/BLUE',count:20},{name:'손대민',type:'스윙',count:3},{name:'션',type:'스윙',count:8},{name:'스티비',type:'스윙',count:0},{name:'데이비드',type:'스윙',count:0}]},
+    {name:'레이디 맥더프',actors:[{name:'이선재',type:'레귤러/PINK',count:23},{name:'펀',type:'레귤러/BLUE',count:24},{name:'표혜인',type:'스윙',count:2},{name:'샤롤',type:'스윙',count:1},{name:'엘레니',type:'스윙',count:0}]},
+    {name:'뱅쿠오',actors:[{name:'허준환',type:'레귤러/PINK',count:20},{name:'정필균',type:'레귤러/BLUE',count:9},{name:'손대민',type:'스윙',count:0},{name:'매트',type:'스윙',count:8},{name:'션',type:'스윙',count:0},{name:'스티비',type:'스윙',count:13}]},
+    {name:'말콤',actors:[{name:'박상하',type:'레귤러/PINK',count:26},{name:'주드',type:'레귤러/BLUE',count:22},{name:'김태양',type:'스윙',count:0},{name:'매트',type:'스윙',count:0},{name:'칼',type:'스윙',count:2}]},
+    {name:'던컨',actors:[{name:'오마',type:'레귤러/PINK',count:23},{name:'샘',type:'레귤러/BLUE',count:24},{name:'김태양',type:'스윙',count:3},{name:'데이비드',type:'스윙',count:0},{name:'스티비',type:'스윙',count:0}]},
+    {name:'포터',actors:[{name:'주드',type:'레귤러/PINK',count:22},{name:'오마',type:'레귤러/BLUE',count:23},{name:'데이비드',type:'스윙',count:4},{name:'스티비',type:'스윙',count:1}]},
+    {name:'댄버스',actors:[{name:'신상미',type:'레귤러/PINK',count:24},{name:'김영은',type:'레귤러/BLUE',count:19},{name:'이선재',type:'스윙',count:0},{name:'헤일리 성',type:'스윙',count:0},{name:'가브리엘',type:'스윙',count:0},{name:'샤롤',type:'스윙',count:7}]},
+    {name:'아그네스',actors:[{name:'펀',type:'레귤러/PINK',count:20},{name:'노바',type:'레귤러/BLUE',count:19},{name:'한세인',type:'스윙',count:4},{name:'헤일리 성',type:'스윙',count:4},{name:'샤롤',type:'스윙',count:2}]},
+    {name:'헤카테',actors:[{name:'제시카',type:'레귤러/PINK',count:20},{name:'앨리C',type:'레귤러/BLUE',count:17},{name:'표혜인',type:'스윙',count:8},{name:'가브리엘',type:'스윙',count:3},{name:'마야',type:'스윙',count:1}]},
+    {name:'볼드위치',actors:[{name:'김영은',type:'레귤러/PINK',count:21},{name:'김수정',type:'레귤러/BLUE',count:24},{name:'헤일리 성',type:'스윙',count:3},{name:'샤롤',type:'스윙',count:1},{name:'앨리C',type:'스윙',count:1}]},
+    {name:'보이위치',actors:[{name:'김도현',type:'레귤러/PINK',count:3},{name:'조던',type:'레귤러/BLUE',count:19},{name:'손대민',type:'스윙',count:16},{name:'데이비드',type:'스윙',count:0},{name:'스티비',type:'스윙',count:13},{name:'매트',type:'스윙',count:0}]},
+    {name:'페이트위치',actors:[{name:'노바',type:'레귤러/PINK',count:16},{name:'신상미',type:'레귤러/BLUE',count:19},{name:'표혜인',type:'스윙',count:8},{name:'헤일리 성',type:'스윙',count:0},{name:'샤롤',type:'스윙',count:0}]},
+    {name:'풀튼',actors:[{name:'크리스',type:'레귤러/PINK',count:21},{name:'김도현',type:'레귤러/BLUE',count:1},{name:'손대민',type:'스윙',count:0},{name:'데이비드',type:'스윙',count:15},{name:'션',type:'스윙',count:13}]},
+    {name:'스픽이지',actors:[{name:'조던',type:'레귤러/PINK',count:15},{name:'총명주',type:'레귤러/BLUE',count:19},{name:'매트',type:'스윙',count:15},{name:'션',type:'스윙',count:2}]},
+    {name:'박제사',actors:[{name:'장준혁',type:'레귤러/PINK',count:26},{name:'허준환',type:'레귤러/BLUE',count:18},{name:'손대민',type:'스윙',count:4},{name:'데이비드',type:'스윙',count:0},{name:'매트',type:'스윙',count:0},{name:'션',type:'스윙',count:0}]},
+    {name:'너스',actors:[{name:'앨리G',type:'레귤러/PINK',count:23},{name:'이선재',type:'레귤러/BLUE',count:18},{name:'표혜인',type:'스윙',count:2},{name:'마야',type:'스윙',count:1},{name:'김영은',type:'스윙',count:0},{name:'헤일리 성',type:'스윙',count:0},{name:'가브리엘',type:'스윙',count:0}]},
+    {name:'매트론',actors:[{name:'김수정',type:'레귤러/PINK',count:22},{name:'한세인',type:'레귤러/BLUE',count:22},{name:'표혜인',type:'스윙',count:0},{name:'샤롤',type:'스윙',count:3},{name:'데이비드',type:'스윙',count:0}]},
+    {name:'벨홉',actors:[{name:'한세인',type:'레귤러/PINK',count:22},{name:'김태양',type:'레귤러/BLUE',count:21},{name:'손대민',type:'스윙',count:0},{name:'표혜인',type:'스윙',count:5},{name:'정필균',type:'스윙',count:2}]},
+    {name:'제 3 간호사',actors:[{name:'한세인',type:'레귤러/PINK',count:2},{name:'김태양',type:'레귤러/BLUE',count:7},{name:'손대민',type:'스윙',count:0},{name:'표혜인',type:'스윙',count:5},{name:'헤일리 성',type:'스윙',count:0}]},
+    {name:'WIB',actors:[{name:'앨리C',type:'레귤러/PINK',count:29},{name:'제시카',type:'레귤러/BLUE',count:19},{name:'앨리G',type:'스윙',count:0},{name:'앨레니',type:'스윙',count:0}]},
+    {name:'MIB',actors:[{name:'샘',type:'레귤러/PINK',count:25},{name:'니콜라스',type:'레귤러/BLUE',count:22},{name:'스티비',type:'스윙',count:0},{name:'주드',type:'스윙',count:0}]},
+    {name:'호스트',actors:[{name:'김태양',type:'레귤러/PINK',count:26},{name:'박상하',type:'레귤러/BLUE',count:22},{name:'손대민',type:'스윙',count:0},{name:'표혜인',type:'스윙',count:0},{name:'한세인',type:'스윙',count:0},{name:'김예슬',type:'스윙',count:0},{name:'칼',type:'스윙',count:2}]}
+  ]
+};
+
+/* ═══════════════════════════════
+   SHEET LOADING
+═══════════════════════════════ */
+function setStatus(type, msg) {
+  const el = document.getElementById('status');
+  el.className = 'status ' + type;
+  el.textContent = msg;
+}
+
+function loadSheet() { /* replaced below by admin-aware version */ }
+
+function parseGvizStats(json) {
+  /* 출연 통계 시트: col0=상태(체크아웃), col1=배우명, col2=총횟수 */
+  const rows = json.table?.rows || [];
+  DATA.actors = rows
+    .map(r => {
+      const status = r.c[0]?.v || '';
+      const name   = r.c[1]?.v || '';
+      const count  = parseInt(r.c[2]?.v) || 0;
+      if (!name || name === '.' || name.trim() === '') return null;
+      return { name, count, checkout: status === '체크아웃', checkinNum: 1, checkinDate: null, checkinTime: null };
+    })
+    .filter(Boolean);
+  DATA.shows = DEMO.shows; // shows come from demo (캐스팅 일정 parsing is complex)
+  DATA.roles = DEMO.roles;
+}
+
+function loadDemo() {
+  DATA.shows  = DEMO.shows;
+  DATA.actors = DEMO.actors.filter(a => a.name && a.name !== '.');
+  DATA.roles  = DEMO.roles;
+  setStatus('ok', `데모 데이터 로드 완료 — ${DATA.shows.length}회 공연 · 배우 ${DATA.actors.filter(a=>a.count>0).length}명`);
+  renderAll();
+}
+
+/* ═══════════════════════════════
+   RENDER ALL
+═══════════════════════════════ */
+function renderAll() {
+  renderOverview();
+  renderActors();
+  renderRoles();
+  renderSchedule();
+  renderMilestones();
+  renderMy();
+}
+
+/* ═══════════════════════════════
+   OVERVIEW
+═══════════════════════════════ */
+function renderOverview() {
+  const active = DATA.actors.filter(a => a.count > 0);
+  const cos    = active.filter(a => a.checkout);
+  const rec    = getMyRecords();
+  const myCount = Object.values(rec).filter(r => r.seen).length;
+
+  document.getElementById('s-shows').textContent  = DATA.shows.length;
+  document.getElementById('s-actors').textContent = active.length;
+  document.getElementById('s-active').textContent = active.filter(a=>!a.checkout).length;
+  document.getElementById('s-co').textContent     = cos.length;
+  document.getElementById('s-my').textContent     = myCount;
+
+  const top10 = [...active].sort((a,b) => b.count - a.count).slice(0,10);
+  const max   = top10[0]?.count || 1;
+  document.getElementById('ov-bars').innerHTML = top10.map(a => `
+    <div class="bar-row">
+      <div class="bar-name">${a.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(a.count/max*100)}%"></div></div>
+      <div class="bar-num">${a.count}</div>
+    </div>`).join('');
+}
+
+/* ═══════════════════════════════
+   ACTORS
+═══════════════════════════════ */
+function actorCards(list) {
+  const rec = getMyRecords();
+  /* count how many times user saw this actor */
+  const myActorCounts = {};
+  DATA.shows.forEach(s => {
+    if (!rec[s.num]?.seen) return;
+    DATA.roles.forEach(role => {
+      role.actors.forEach(ra => {
+        if (ra.count > 0) myActorCounts[ra.name] = (myActorCounts[ra.name]||0) + 1;
+      });
+    });
+  });
+
+  return list.map(a => {
+    const ms = MILESTONES.filter(m => m <= a.count);
+    const myC = myActorCounts[a.name] || 0;
+    return `
+    <div class="actor-card ${a.checkout?'checkout':''}" onclick="openActorModal('${a.name.replace(/'/g,"\\'")}')">
+      <div class="actor-count">${a.count}<span class="unit">회</span></div>
+      <div class="actor-name">${a.name}</div>
+      ${a.checkinDate ? `<span class="badge checkin">첫공 #${a.checkinNum}</span>` : ''}
+      ${a.checkout    ? `<span class="badge checkout">체크아웃</span>` : ''}
+      ${ms.map(m=>`<span class="badge gold">${m}회</span>`).join('')}
+      ${myC > 0 ? `<div class="my-count-badge">👁 내가 본 횟수 ${myC}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function filterActors() {
+  const q = document.getElementById('actor-q').value.toLowerCase();
+  let list = DATA.actors.filter(a => (a.count>0||a.checkout) && a.name.toLowerCase().includes(q));
+  sortList(list, DATA.actorSort);
+  document.getElementById('actor-grid').innerHTML = actorCards(list) || '<div class="empty">검색 결과 없음</div>';
+}
+
+function setActorSort(by, btn) {
+  DATA.actorSort = by;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterActors();
+}
+
+function sortList(arr, by) {
+  if (by === 'count')  arr.sort((a,b) => b.count - a.count);
+  if (by === 'name')   arr.sort((a,b) => a.name.localeCompare(b.name,'ko'));
+  if (by === 'checkin') arr.sort((a,b) => (a.checkinNum||999) - (b.checkinNum||999));
+}
+
+function renderActors() {
+  let list = DATA.actors.filter(a => a.count>0 || a.checkout);
+  sortList(list, DATA.actorSort);
+  document.getElementById('actor-grid').innerHTML = actorCards(list) || '<div class="empty">데이터 없음</div>';
+}
+
+/* ═══════════════════════════════
+   ROLES
+═══════════════════════════════ */
+function renderRoles(q='') {
+  const roles = DATA.roles.filter(r => r.name.toLowerCase().includes(q.toLowerCase()));
+  document.getElementById('roles-list').innerHTML = roles.map(role => {
+    const filtered = role.actors.filter(a => a.count > 0).sort((a,b) => b.count - a.count);
+    const total    = role.actors.reduce((s,a) => s+a.count, 0);
+    return `
+    <div class="role-card">
+      <div class="role-title">${role.name} <span style="font-size:12px;color:var(--muted);font-family:var(--mono);font-weight:300">총 ${total}회</span></div>
+      ${filtered.map(a => `
+        <div class="role-actor-row">
+          <div><span>${a.name}</span><span class="role-type">${a.type}</span></div>
+          <span class="role-cnt">${a.count}회</span>
+        </div>`).join('') || '<div style="font-size:11px;color:var(--muted)">출연 기록 없음</div>'}
+    </div>`;
+  }).join('') || '<div class="empty">검색 결과 없음</div>';
+}
+
+function filterRoles() { renderRoles(document.getElementById('role-q').value); }
+
+/* ═══════════════════════════════
+   SCHEDULE
+═══════════════════════════════ */
+function renderSchedule() {
+  const rec      = getMyRecords();
+  const onlySeen = document.getElementById('only-seen')?.checked;
+  const shows    = onlySeen ? DATA.shows.filter(s => rec[s.num]?.seen) : DATA.shows;
+
+  document.getElementById('schedule-list').innerHTML = shows.map(s => {
+    const isSeen   = !!rec[s.num]?.seen;
+    const timeClr  = s.time === '밤' ? 'color:rgba(200,169,110,0.7)' : 'color:rgba(140,180,230,0.7)';
+    const msBadges = MILESTONES.filter(m => m === s.num).map(m => `<span class="badge gold">${m}회</span>`).join('');
+    return `
+    <div class="perf-row ${isSeen?'my-perf':''}" onclick="openShowModal(${s.num})">
+      <div class="perf-num">${s.num}</div>
+      <div>
+        <div class="perf-date">${s.date}</div>
+        <div class="perf-time" style="${timeClr}">${s.time === '밤' ? '🌙 밤공연' : '☀ 낮공연'}</div>
+      </div>
+      <div class="perf-tags">
+        ${msBadges}
+        ${isSeen ? '<span class="badge blue">관람 ✓</span>' : ''}
+      </div>
+    </div>`;
+  }).join('') || '<div class="empty">공연 없음</div>';
+}
+
+/* ═══════════════════════════════
+   MILESTONES
+═══════════════════════════════ */
+function renderMilestones() {
+  const done = [], upcoming = [];
+  DATA.actors.filter(a => a.count > 0).forEach(actor => {
+    MILESTONES.forEach(m => {
+      if (actor.count >= m) {
+        const s = DATA.shows[m-1];
+        done.push({ actor: actor.name, m, date: s?.date||'?', time: s?.time||'' });
+      }
+    });
+    const next = MILESTONES.find(m => m > actor.count);
+    if (next && !actor.checkout) upcoming.push({ actor: actor.name, current: actor.count, next, rem: next - actor.count });
+  });
+
+  done.sort((a,b) => b.m - a.m);
+  upcoming.sort((a,b) => a.rem - b.rem);
+
+  document.getElementById('ms-done').innerHTML = done.length
+    ? done.map(d => `
+      <div class="ms-row">
+        <div class="ms-icon">${d.m}</div>
+        <div class="ms-info"><div class="ms-name">${d.actor}</div><div class="ms-detail">${d.date} ${d.time}</div></div>
+        <span class="badge gold">${d.m}회</span>
+      </div>`).join('')
+    : '<div class="empty">기념 공연 없음</div>';
+
+  document.getElementById('ms-upcoming').innerHTML = upcoming.slice(0,10).map(u => `
+    <div class="ms-row">
+      <div class="ms-icon">${u.next}</div>
+      <div class="ms-info">
+        <div class="ms-name">${u.actor}</div>
+        <div class="ms-detail">현재 ${u.current}회 — <strong style="color:var(--gold)">${u.rem}회</strong> 남음</div>
+      </div>
+    </div>`).join('') || '<div class="empty">없음</div>';
+}
+
+/* ═══════════════════════════════
+   MY RECORDS
+═══════════════════════════════ */
+function renderMy() {
+  const rec   = getMyRecords();
+  const seen  = DATA.shows.filter(s => rec[s.num]?.seen);
+  const total = seen.length;
+  const day   = seen.filter(s => s.time==='낮').length;
+  const night = seen.filter(s => s.time==='밤').length;
+  const first = seen[0];
+  const last  = seen[seen.length-1];
+
+  document.getElementById('my-total').textContent = total;
+  document.getElementById('my-day').textContent   = day;
+  document.getElementById('my-night').textContent = night;
+  document.getElementById('my-first').textContent = first ? `#${first.num} ${first.date}` : '—';
+  document.getElementById('my-last').textContent  = last  ? `#${last.num} ${last.date}`  : '—';
+  document.getElementById('s-my').textContent     = total;
+
+  /* actor counts from seen shows */
+  const myActorCounts = {};
+  seen.forEach(() => {
+    DATA.roles.forEach(role => {
+      role.actors.forEach(ra => {
+        if (ra.count > 0) myActorCounts[ra.name] = (myActorCounts[ra.name]||0) + 1;
+      });
+    });
+  });
+
+  /* per-show actor data: build a map showNum → set of actors from casting */
+  /* Since we don't have per-show casting in demo, just count proportionally */
+  const myActorList = Object.entries(myActorCounts).sort((a,b) => b[1]-a[1]).slice(0,10);
+  const maxA = myActorList[0]?.[1] || 1;
+
+  document.getElementById('my-actor-bars').innerHTML = myActorList.length
+    ? myActorList.map(([name, cnt]) => `
+      <div class="bar-row">
+        <div class="bar-name">${name}</div>
+        <div class="bar-track"><div class="bar-fill my" style="width:${Math.round(cnt/maxA*100)}%"></div></div>
+        <div class="bar-num my">${cnt}</div>
+      </div>`).join('')
+    : '<div class="empty">관람 기록을 추가하면 통계가 나타납니다</div>';
+
+  document.getElementById('my-log').innerHTML = seen.length
+    ? [...seen].reverse().map(s => {
+        const note = rec[s.num]?.note || '';
+        const timeClr = s.time==='밤' ? 'rgba(200,169,110,0.7)' : 'rgba(140,180,230,0.7)';
+        return `
+        <div class="seen-log-row">
+          <div class="seen-log-num">${s.num}</div>
+          <div style="flex:1">
+            <div style="font-size:12px;color:var(--text)">${s.date} <span style="color:${timeClr}">${s.time}</span></div>
+            ${note ? `<div style="font-size:10px;color:var(--muted);margin-top:2px">${note}</div>` : ''}
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button class="btn btn-sm" onclick="openShowModal(${s.num});event.stopPropagation()">메모</button>
+            <button class="del-btn" onclick="toggleSeen(${s.num})" title="기록 삭제">✕</button>
+          </div>
+        </div>`;
+      }).join('')
+    : '<div class="empty">공연 일정 탭에서 관람한 회차를 클릭하여 기록해보세요</div>';
+}
+
+/* ═══════════════════════════════
+   MODALS
+═══════════════════════════════ */
+function openActorModal(name) {
+  const actor = DATA.actors.find(a => a.name === name);
+  if (!actor) return;
+  const ms = MILESTONES.filter(m => m <= actor.count);
+  const actorRoles = DATA.roles.map(role => {
+    const ra = role.actors.find(a => a.name === name);
+    return ra && ra.count > 0 ? { roleName: role.name, type: ra.type, count: ra.count } : null;
+  }).filter(Boolean).sort((a,b) => b.count - a.count);
+
+  document.getElementById('actor-modal-body').innerHTML = `
+    <div class="modal-name">${actor.name}</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px">${actor.count}회 출연${actor.checkout?' · 체크아웃':''}</div>
+    ${actor.checkinDate ? `<span class="badge checkin" style="margin-bottom:4px">첫공 #${actor.checkinNum} (${actor.checkinDate} ${actor.checkinTime})</span>` : ''}
+    ${actor.checkout ? `<span class="badge checkout" style="margin-bottom:4px">막공 #${actor.checkoutShowNum||'?'} (${actor.checkoutDate||'?'})</span>` : ''}
+    ${ms.length ? `<div style="margin:12px 0">${ms.map(m=>`<span class="badge gold">${m}회</span>`).join('')}</div>` : ''}
+    ${!actor.checkout ? (() => { const next = MILESTONES.find(m=>m>actor.count); return next ? `<div style="font-size:11px;color:var(--muted);margin-bottom:12px">다음 기념: <span style="color:var(--gold)">${next}회</span> (${next-actor.count}회 남음)</div>` : ''; })() : ''}
+    ${actorRoles.length ? `
+      <div class="divider"></div>
+      <div class="sec" style="margin-bottom:10px">출연 역할</div>
+      ${actorRoles.map(r=>`
+        <div class="role-item">
+          <div><span>${r.roleName}</span><span class="role-type">${r.type}</span></div>
+          <span class="role-cnt">${r.count}회</span>
+        </div>`).join('')}
+    ` : ''}
+  `;
+  document.getElementById('actor-modal').classList.add('open');
+}
+
+function openShowModal(num) {
+  const s   = DATA.shows.find(s => s.num === num);
+  if (!s) return;
+  const rec  = getMyRecords();
+  const isSeen = !!rec[num]?.seen;
+  const note   = rec[num]?.note || '';
+  const timeClr = s.time==='밤' ? 'rgba(200,169,110,0.7)' : 'rgba(140,180,230,0.7)';
+
+  document.getElementById('show-modal-body').innerHTML = `
+    <div class="modal-name">#${s.num} ${s.date}</div>
+    <div style="font-size:13px;color:${timeClr};margin-bottom:16px">${s.time === '밤' ? '🌙 밤공연' : '☀ 낮공연'}</div>
+    <div style="margin-bottom:16px">
+      <button class="btn ${isSeen?'':'btn-sm'}" style="${isSeen?'border-color:rgba(100,170,220,0.5);color:var(--blue);background:rgba(100,170,220,0.08)':''}" onclick="toggleSeen(${num});renderShowModal(${num})">
+        ${isSeen ? '✓ 관람 기록됨 — 취소하기' : '+ 관람 기록 추가'}
+      </button>
+    </div>
+    ${isSeen ? `
+      <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-bottom:6px">메모</div>
+      <textarea class="note-input" id="modal-note" placeholder="이날 공연에 대한 메모를 남겨보세요...">${note}</textarea>
+      <button class="btn btn-sm" style="margin-top:8px" onclick="saveNote(${num},document.getElementById('modal-note').value);alert('저장됐어요!')">메모 저장</button>
+    ` : ''}
+    <div class="divider"></div>
+    <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-bottom:8px">기념 공연 여부</div>
+    ${MILESTONES.filter(m=>m===num).length ? MILESTONES.filter(m=>m===num).map(m=>`<span class="badge gold">${m}회 기념 공연</span>`).join('') : '<div style="font-size:11px;color:var(--muted)">해당 없음</div>'}
+  `;
+  document.getElementById('show-modal').classList.add('open');
+}
+
+function renderShowModal(num) {
+  openShowModal(num);
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModalOuter(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
+/* ═══════════════════════════════
+   TABS
+═══════════════════════════════ */
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pane-' + name).classList.add('active');
+  if (name === 'my') renderMy();
+}
+
+/* ═══════════════════════════════
+   ADMIN PANEL
+   - 제목 5번 클릭 → 비밀번호 확인
+   - 비밀번호: snmadmin (원하면 바꾸세요)
+   - 시트 ID는 localStorage에 저장
+═══════════════════════════════ */
+const ADMIN_PW   = 'snmadmin';
+const LS_SHEET   = 'snm_sheet_id';
+let titleClicks  = 0;
+let titleTimer   = null;
+
+document.getElementById('admin-trigger').addEventListener('click', () => {
+  titleClicks++;
+  clearTimeout(titleTimer);
+  titleTimer = setTimeout(() => { titleClicks = 0; }, 2000);
+  if (titleClicks >= 5) {
+    titleClicks = 0;
+    const pw = prompt('관리자 비밀번호를 입력하세요');
+    if (pw === ADMIN_PW) openAdmin();
+    else if (pw !== null) alert('비밀번호가 틀렸습니다');
+  }
+});
+
+function openAdmin() {
+  const saved = localStorage.getItem(LS_SHEET) || '';
+  document.getElementById('sheetId').value = saved;
+  document.getElementById('admin-panel').style.display = 'block';
+}
+
+function closeAdmin() {
+  document.getElementById('admin-panel').style.display = 'none';
+}
+
+function adminSave() {
+  const id = document.getElementById('sheetId').value.trim();
+  if (!id) return alert('시트 ID를 입력해주세요');
+  localStorage.setItem(LS_SHEET, id);
+  closeAdmin();
+  loadSheet();
+}
+
+/* ═══════════════════════════════
+   SHEET LOADING (id from localStorage)
+═══════════════════════════════ */
+function getSheetId() {
+  return localStorage.getItem(LS_SHEET) || '';
+}
+
+loadSheet = async function() {
+  const id = getSheetId();
+  if (!id) { loadDemo(); return; }
+
+  const inp = document.getElementById('sheetId');
+  if (inp) inp.value = id;
+
+  setStatus('loading', '구글 시트 연결 중...');
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=%EC%B6%9C%EC%97%B0+%ED%86%B5%EA%B3%84`;
+    const res = await fetch(url, { mode: 'cors' });
+    if (!res.ok) throw new Error('응답 오류');
+    const text = await res.text();
+    const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);\s*$/, ''));
+    parseGvizStats(json);
+    setStatus('ok', `시트 연결 완료 ✓  — 마지막 업데이트: ${new Date().toLocaleTimeString('ko-KR')}`);
+    renderAll();
+  } catch(e) {
+    setStatus('err', `시트 접근 실패 — 데모 데이터로 표시합니다`);
+    loadDemo();
+  }
+};
+
+/* ═══════════════════════════════
+   INIT + AUTO-REFRESH (5분마다)
+═══════════════════════════════ */
+(function init() {
+  const saved = getSheetId();
+  if (saved) {
+    loadSheet();
+  } else {
+    loadDemo();
+    setStatus('', '제목을 5번 클릭하면 시트를 연결할 수 있습니다');
+  }
+  /* auto-refresh every 5 minutes */
+  setInterval(() => { if (getSheetId()) loadSheet(); }, 5 * 60 * 1000);
+})();
+</script>
+</body>
+</html>
