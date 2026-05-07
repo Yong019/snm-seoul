@@ -549,20 +549,105 @@ function setStatus(type, msg) {
 
 function loadSheet() { /* replaced below by admin-aware version */ }
 
-function parseGvizStats(json) {
-  /* 출연 통계 시트: col0=상태(체크아웃), col1=배우명, col2=총횟수 */
+function parseCastingSheet(json) {
+  /* ── 캐스팅 일정 시트 파싱 ──
+     Row 0 : 회차 번호 (1, 2, 3 ...)
+     Row 1 : 날짜
+     Row 2 : 낮/밤
+     Row 3+ : 역할명(col0), 회차별 배우이름(col1~)
+  */
   const rows = json.table?.rows || [];
-  DATA.actors = rows
-    .map(r => {
-      const status = r.c[0]?.v || '';
-      const name   = r.c[1]?.v || '';
-      const count  = parseInt(r.c[2]?.v) || 0;
-      if (!name || name === '.' || name.trim() === '') return null;
-      return { name, count, checkout: status === '체크아웃', checkinNum: 1, checkinDate: null, checkinTime: null };
-    })
-    .filter(Boolean);
-  DATA.shows = DEMO.shows; // shows come from demo (캐스팅 일정 parsing is complex)
-  DATA.roles = DEMO.roles;
+  if (rows.length < 3) return;
+
+  const numRow  = rows[0];   // 회차 번호
+  const dateRow = rows[1];   // 날짜
+  const timeRow = rows[2];   // 낮/밤
+
+  // 공연 목록 빌드 (col1 부터)
+  const shows = [];
+  for (let c = 1; c < (numRow.c?.length || 0); c++) {
+    const num  = parseInt(numRow.c[c]?.v);
+    const raw  = dateRow.c[c]?.v;
+    const time = timeRow.c[c]?.v || '';
+    if (!num || !raw) continue;
+    // 날짜 포맷: 구글 시트 gviz는 Date(yyyy,m,d) 형태로 오거나 string으로 옴
+    let date = '';
+    if (typeof raw === 'string' && raw.startsWith('Date(')) {
+      const parts = raw.replace('Date(','').replace(')','').split(',');
+      const y = parts[0], m = String(parseInt(parts[1])+1).padStart(2,'0'), d = String(parts[2]).padStart(2,'0');
+      date = `${y}.${m}.${d}`;
+    } else if (typeof raw === 'string') {
+      date = raw.replace(/-/g, '.');
+    } else {
+      date = String(raw);
+    }
+    shows.push({ num, date, time, col: c });
+  }
+  shows.sort((a,b) => a.num - b.num);
+
+  // 배우별 출연 횟수 & 첫/막 공연 계산
+  const actorMap = {}; // name → { count, firstShow, lastShow }
+  const roleMap  = {}; // roleName → { actorName → count }
+  const ROLES_START = 3;
+
+  for (let r = ROLES_START; r < rows.length; r++) {
+    const row = rows[r];
+    if (!row.c) continue;
+    const roleName = row.c[0]?.v;
+    if (!roleName || roleName.trim() === '') continue;
+    if (!roleMap[roleName]) roleMap[roleName] = {};
+
+    shows.forEach(s => {
+      const raw = row.c[s.col]?.v || '';
+      // 셀에 여러 배우가 있을 수 있음 (예: "크리스 > 니콜라스")
+      const names = raw.split('>').map(n => n.trim()).filter(n => n && n !== '-');
+      names.forEach(name => {
+        if (!actorMap[name]) actorMap[name] = { count: 0, firstShow: null, lastShow: null };
+        actorMap[name].count++;
+        if (!actorMap[name].firstShow || s.num < actorMap[name].firstShow.num)
+          actorMap[name].firstShow = s;
+        if (!actorMap[name].lastShow || s.num > actorMap[name].lastShow.num)
+          actorMap[name].lastShow = s;
+        roleMap[roleName][name] = (roleMap[roleName][name] || 0) + 1;
+      });
+    });
+  }
+
+  // 체크아웃 정보는 출연 통계 시트에서 오지만 여기서는 없으므로 보존
+  const existingCheckouts = {};
+  DATA.actors.forEach(a => { if (a.checkout) existingCheckouts[a.name] = a; });
+
+  DATA.shows = shows.map(s => ({ num: s.num, date: s.date, time: s.time }));
+
+  DATA.actors = Object.entries(actorMap).map(([name, info]) => ({
+    name,
+    count: info.count,
+    checkout: !!existingCheckouts[name],
+    checkinNum:   info.firstShow?.num  || null,
+    checkinDate:  info.firstShow?.date || null,
+    checkinTime:  info.firstShow?.time || null,
+    checkoutShowNum:  existingCheckouts[name]?.checkoutShowNum || null,
+    checkoutDate:     existingCheckouts[name]?.checkoutDate    || null,
+  })).sort((a,b) => b.count - a.count);
+
+  DATA.roles = Object.entries(roleMap).map(([name, actorCounts]) => ({
+    name,
+    actors: Object.entries(actorCounts).map(([aName, cnt]) => ({
+      name: aName, type: '출연', count: cnt
+    })).sort((a,b) => b.count - a.count)
+  }));
+}
+
+function parseCheckoutSheet(json) {
+  /* 출연 통계 시트에서 체크아웃 여부만 읽어 DATA.actors에 반영 */
+  const rows = json.table?.rows || [];
+  rows.forEach(r => {
+    const status = r.c?.[0]?.v || '';
+    const name   = r.c?.[1]?.v || '';
+    if (!name || status !== '체크아웃') return;
+    const actor = DATA.actors.find(a => a.name === name);
+    if (actor) actor.checkout = true;
+  });
 }
 
 function loadDemo() {
@@ -951,17 +1036,30 @@ loadSheet = async function() {
   if (inp) inp.value = id;
 
   setStatus('loading', '구글 시트 연결 중...');
-  try {
-    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=%EC%B6%9C%EC%97%B0+%ED%86%B5%EA%B3%84`;
-    const res = await fetch(url, { mode: 'cors' });
-    if (!res.ok) throw new Error('응답 오류');
+
+  async function fetchSheet(sheetName) {
+    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`${sheetName} 응답 오류`);
     const text = await res.text();
-    const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);\s*$/, ''));
-    parseGvizStats(json);
-    setStatus('ok', `시트 연결 완료 ✓  — 마지막 업데이트: ${new Date().toLocaleTimeString('ko-KR')}`);
+    return JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);\s*$/, ''));
+  }
+
+  try {
+    // 1) 캐스팅 일정 시트로 공연·배우·역할 파싱
+    const castingJson = await fetchSheet('캐스팅 일정');
+    parseCastingSheet(castingJson);
+
+    // 2) 출연 통계 시트에서 체크아웃 정보만 추가 반영
+    try {
+      const statsJson = await fetchSheet('출연 통계');
+      parseCheckoutSheet(statsJson);
+    } catch(e) { /* 없어도 무관 */ }
+
+    setStatus('ok', `연결 완료 ✓  ${DATA.shows.length}회 공연 · 배우 ${DATA.actors.length}명 — ${new Date().toLocaleTimeString('ko-KR')}`);
     renderAll();
   } catch(e) {
-    setStatus('err', `시트 접근 실패 — 데모 데이터로 표시합니다`);
+    setStatus('err', `시트 접근 실패 (${e.message}) — 데모 데이터로 표시합니다. 시트 공유 설정을 확인해주세요.`);
     loadDemo();
   }
 };
