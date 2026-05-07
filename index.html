@@ -1,1092 +1,1249 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sleep No More Seoul — 공연 기록</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sleep No More Mckithan — Casting Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg: #0a0a0b;
-  --surface: #111113;
-  --card: #161618;
-  --card2: #1c1c1f;
-  --border: rgba(255,255,255,0.08);
-  --border2: rgba(255,255,255,0.13);
-  --gold: #c8a96e;
-  --gold-dim: rgba(200,169,110,0.3);
-  --gold-bg: rgba(200,169,110,0.1);
-  --text: #e8e4dc;
-  --muted: rgba(232,228,220,0.45);
-  --muted2: rgba(232,228,220,0.25);
-  --red: rgba(224,85,85,0.85);
-  --green: #4caf7d;
-  --blue: rgba(140,180,230,0.8);
-  --serif: 'Cormorant Garamond', serif;
-  --mono: 'DM Mono', monospace;
+  --black: #0a0a0a;
+  --dark: #111111;
+  --panel: #161616;
+  --surface: #1c1c1c;
+  --border: #2a2a2a;
+  --border-light: #333;
+  --muted: #555;
+  --dim: #888;
+  --text: #c8c4bc;
+  --bright: #e8e2d8;
+  --white: #f2ede6;
+  --gold: #b89a5e;
+  --gold-dim: #7a6438;
+  --red: #8b3a3a;
+  --red-bright: #c45c5c;
+  --teal: #3a6b6b;
+  --teal-bright: #5aacac;
 }
-
-html { background: var(--bg); }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 13px;
-  line-height: 1.6;
-  min-height: 100vh;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--black);
+  color:var(--text);
+  font-family:'Noto Sans KR',sans-serif;
+  font-weight:300;
+  font-size:14px;
+  line-height:1.7;
+  min-height:100vh;
 }
-
-/* ── LAYOUT ── */
-.app-wrap { max-width: 960px; margin: 0 auto; padding: 0 0 80px; }
+::selection{background:var(--gold-dim);color:var(--white)}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:var(--border-light)}
 
 /* ── HEADER ── */
-header {
-  padding: 32px 32px 24px;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-  overflow: hidden;
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,10,10,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;
 }
-header::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 20% 60%, rgba(200,169,110,0.06) 0%, transparent 55%);
-  pointer-events: none;
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-weight:300;letter-spacing:0.12em;
+  color:var(--white);
+  display:flex;align-items:center;gap:12px;
+  cursor:default;user-select:none;
 }
-.header-top { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
-h1 {
-  font-family: var(--serif);
-  font-size: 30px;
-  font-weight: 300;
-  font-style: italic;
-  color: var(--gold);
-  letter-spacing: 0.02em;
+.logo span{color:var(--gold);font-style:italic}
+.header-right{display:flex;align-items:center;gap:16px}
+.sync-status{
+  font-family:'DM Mono',monospace;
+  font-size:11px;color:var(--dim);
+  display:flex;align-items:center;gap:6px;
 }
-.header-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.18em; text-transform: uppercase; }
-
-.sheet-row { display: flex; gap: 8px; align-items: center; }
-.sheet-input {
-  flex: 1; max-width: 480px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--mono); font-size: 11px;
-  padding: 7px 11px; border-radius: 4px; outline: none;
-  transition: border-color 0.2s;
+.sync-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--muted);
+  transition:background .3s;
 }
-.sheet-input:focus { border-color: var(--gold-dim); }
-.btn {
-  background: var(--gold-bg); border: 1px solid var(--gold-dim);
-  color: var(--gold); font-family: var(--mono); font-size: 11px;
-  padding: 7px 16px; border-radius: 4px; cursor: pointer;
-  transition: background 0.2s; white-space: nowrap; letter-spacing: 0.06em;
+.sync-dot.live{background:#4caf50;box-shadow:0 0 6px #4caf5088;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn-settings{
+  background:none;border:1px solid var(--border);
+  color:var(--dim);cursor:pointer;
+  padding:5px 12px;border-radius:2px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:0.08em;
+  transition:all .2s;
 }
-.btn:hover { background: rgba(200,169,110,0.2); }
-.btn-sm { padding: 4px 10px; font-size: 10px; }
-.status { font-size: 10px; color: var(--muted); margin-top: 7px; min-height: 14px; }
-.status.ok  { color: var(--green); }
-.status.err { color: var(--red); }
-.status.loading { color: var(--gold); }
+.btn-settings:hover{border-color:var(--gold);color:var(--gold)}
 
 /* ── NAV TABS ── */
-nav {
-  display: flex; gap: 0;
-  border-bottom: 1px solid var(--border);
-  padding: 0 32px;
-  overflow-x: auto;
+.nav-wrap{
+  background:var(--dark);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex;gap:0;overflow-x:auto;
 }
-nav::-webkit-scrollbar { display: none; }
-.tab {
-  background: none; border: none; border-bottom: 2px solid transparent;
-  color: var(--muted); font-family: var(--mono); font-size: 11px;
-  padding: 13px 17px; cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
-  letter-spacing: 0.08em; white-space: nowrap;
+.nav-wrap::-webkit-scrollbar{height:0}
+.nav-tab{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:14px 18px;
+  border-bottom:2px solid transparent;
+  transition:all .2s;white-space:nowrap;
 }
-.tab:hover { color: var(--text); }
-.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
 
-/* ── BODY ── */
-.body { padding: 24px 32px; }
-.pane { display: none; }
-.pane.active { display: block; }
+/* ── LAYOUT ── */
+.main{padding:28px 24px;max-width:1200px;margin:0 auto}
 
-/* ── STATS GRID ── */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 12px; margin-bottom: 26px;
+/* ── HERO STATS ── */
+.hero-stats{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  margin-bottom:28px;
 }
-.stat-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 14px 16px;
+.stat-cell{
+  background:var(--dark);
+  padding:20px 20px 16px;
 }
-.stat-label { font-size: 9px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
-.stat-value { font-family: var(--serif); font-size: 30px; font-weight: 400; color: var(--gold); line-height: 1; }
-.stat-value.sm { font-size: 22px; }
+.stat-cell .num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:42px;font-weight:300;
+  color:var(--white);line-height:1;
+  margin-bottom:4px;
+}
+.stat-cell .num.gold{color:var(--gold)}
+.stat-cell .lbl{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--muted);
+  letter-spacing:0.12em;text-transform:uppercase;
+}
 
 /* ── SECTION TITLE ── */
-.sec { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-.sec-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-.sec-row .sec { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
-
-/* ── BAR CHART ── */
-.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.bar-name { font-size: 11px; color: var(--text); min-width: 72px; text-align: right; }
-.bar-track { flex: 1; height: 5px; background: var(--surface); border-radius: 3px; overflow: hidden; }
-.bar-fill { height: 100%; background: linear-gradient(90deg, rgba(200,169,110,0.45), rgba(200,169,110,0.9)); border-radius: 3px; transition: width 0.5s ease; }
-.bar-fill.my { background: linear-gradient(90deg, rgba(100,170,220,0.45), rgba(100,170,220,0.9)); }
-.bar-num { font-size: 11px; color: var(--gold); min-width: 30px; text-align: right; font-family: var(--serif); }
-.bar-num.my { color: var(--blue); }
-
-/* ── SEARCH & SORT ── */
-.search {
-  width: 100%; background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--mono); font-size: 12px;
-  padding: 8px 12px; border-radius: 4px; outline: none; margin-bottom: 14px;
-  transition: border-color 0.2s;
+.sec-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:300;font-style:italic;
+  color:var(--bright);
+  margin-bottom:16px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:baseline;gap:12px;
 }
-.search:focus { border-color: var(--gold-dim); }
-.sort-row { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
-.sort-btn {
-  background: none; border: 1px solid var(--border); color: var(--muted);
-  font-family: var(--mono); font-size: 10px; padding: 4px 10px;
-  border-radius: 3px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.08em;
+.sec-title small{
+  font-family:'DM Mono',monospace;
+  font-size:10px;font-style:normal;
+  color:var(--muted);letter-spacing:0.1em;
 }
-.sort-btn:hover, .sort-btn.active { border-color: var(--gold-dim); color: var(--gold); }
+
+/* ── SEARCH + FILTER ── */
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.search-input{
+  background:var(--panel);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:7px 12px;
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;
+  border-radius:2px;outline:none;
+  flex:1;min-width:160px;
+  transition:border-color .2s;
+}
+.search-input::placeholder{color:var(--muted)}
+.search-input:focus{border-color:var(--gold-dim)}
+select.filter-sel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:7px 10px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  border-radius:2px;outline:none;cursor:pointer;
+}
+select.filter-sel:focus{border-color:var(--gold-dim)}
 
 /* ── ACTOR GRID ── */
-.actor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
-.actor-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 6px; padding: 14px; cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-  position: relative; overflow: hidden;
+.actor-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1px;background:var(--border);
 }
-.actor-card:hover { border-color: var(--gold-dim); background: rgba(200,169,110,0.04); }
-.actor-card.checkout { border-color: rgba(224,85,85,0.3); }
-.actor-card.checkout::after {
-  content: 'CHECKOUT'; position: absolute; top: 8px; right: 8px;
-  font-size: 8px; letter-spacing: 0.12em; color: var(--red); opacity: 0.8;
+.actor-card{
+  background:var(--dark);
+  padding:16px 18px;
+  cursor:pointer;
+  transition:background .15s;
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:8px;
 }
-.actor-count { font-family: var(--serif); font-size: 26px; color: var(--gold); font-weight: 300; line-height: 1; margin-bottom: 4px; }
-.actor-count .unit { font-size: 12px; color: var(--muted); margin-left: 2px; }
-.actor-name { font-family: var(--serif); font-size: 16px; color: var(--text); margin-bottom: 6px; }
-.my-count-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 10px; color: var(--blue); margin-top: 4px;
+.actor-card:hover{background:var(--panel)}
+.actor-card.checkout{opacity:.65}
+.actor-name{
+  font-size:15px;font-weight:400;color:var(--bright);
+  margin-bottom:3px;
 }
+.actor-meta{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--muted);
+  line-height:1.6;
+}
+.actor-count{
+  font-family:'Cormorant Garamond',serif;
+  font-size:32px;font-weight:300;color:var(--gold);
+  line-height:1;flex-shrink:0;
+}
+.actor-count.checkout-count{color:var(--muted)}
 
 /* ── BADGES ── */
-.badge {
-  display: inline-block; font-size: 9px; padding: 2px 6px;
-  border-radius: 3px; letter-spacing: 0.1em; margin: 2px 2px 0 0;
+.badge{
+  display:inline-block;
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.08em;
+  padding:2px 6px;border-radius:1px;
+  margin-left:6px;vertical-align:middle;
 }
-.badge.checkin  { background: rgba(26,92,58,0.3); border: 1px solid rgba(76,175,125,0.3); color: var(--green); }
-.badge.checkout { background: rgba(139,32,32,0.3); border: 1px solid rgba(224,85,85,0.3); color: var(--red); }
-.badge.gold     { background: var(--gold-bg); border: 1px solid var(--gold-dim); color: var(--gold); }
-.badge.blue     { background: rgba(100,170,220,0.1); border: 1px solid rgba(100,170,220,0.3); color: var(--blue); }
+.badge-out{background:var(--red);color:#ffd0d0}
+.badge-mile{background:var(--gold-dim);color:var(--white)}
+.badge-new{background:var(--teal);color:#b0e8e8}
 
-/* ── ROLE CARDS ── */
-.role-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; margin-bottom: 10px; }
-.role-title { font-family: var(--serif); font-size: 18px; color: var(--gold); margin-bottom: 10px; }
-.role-actor-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 11px;
+/* ── DETAIL PANEL ── */
+.detail-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(4px);
+  display:none;align-items:flex-start;justify-content:flex-end;
 }
-.role-actor-row:last-child { border-bottom: none; }
-.role-type { color: var(--muted); font-size: 10px; margin-left: 8px; }
-.role-cnt { color: var(--gold); }
+.detail-overlay.open{display:flex}
+.detail-panel{
+  background:var(--dark);
+  border-left:1px solid var(--border);
+  width:min(480px,100vw);height:100vh;
+  overflow-y:auto;
+  padding:24px;
+  animation:slideIn .25s ease;
+}
+@keyframes slideIn{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+.detail-close{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:20px;
+  float:right;padding:4px;
+  transition:color .2s;
+}
+.detail-close:hover{color:var(--white)}
+.detail-actor-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:36px;font-weight:300;
+  color:var(--white);margin-bottom:4px;
+}
+.detail-sub{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--dim);margin-bottom:20px;
+}
+.detail-section{margin-bottom:20px}
+.detail-section h4{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;
+  padding-bottom:6px;border-bottom:1px solid var(--border);
+}
+.checkin-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  margin-bottom:16px;
+}
+.checkin-cell{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:12px 14px;
+}
+.checkin-cell .ci-label{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:4px;
+}
+.checkin-cell .ci-date{
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-weight:300;color:var(--bright);
+}
+.checkin-cell .ci-num{
+  font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);
+}
+.milestone-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.milestone-chip{
+  background:var(--panel);border:1px solid var(--gold-dim);
+  padding:4px 10px;
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--gold);
+}
+.role-bar-row{
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:7px;font-size:12px;
+}
+.role-bar-name{width:90px;color:var(--text);flex-shrink:0;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.role-bar-track{flex:1;height:3px;background:var(--border);position:relative}
+.role-bar-fill{height:100%;background:var(--gold-dim);transition:width .5s ease}
+.role-bar-n{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--muted);min-width:28px;text-align:right;
+}
 
-/* ── SCHEDULE ── */
-.perf-row {
-  display: grid; grid-template-columns: 42px 1fr auto;
-  align-items: center; gap: 12px;
-  padding: 8px 10px; border-radius: 4px; margin-bottom: 3px;
-  transition: background 0.15s; cursor: pointer;
+/* ── ROLE TABLE ── */
+.role-block{
+  border:1px solid var(--border);
+  margin-bottom:12px;
 }
-.perf-row:hover { background: rgba(255,255,255,0.03); }
-.perf-row.my-perf { background: rgba(100,170,220,0.05); border-left: 2px solid rgba(100,170,220,0.4); padding-left: 8px; }
-.perf-num { font-family: var(--serif); font-size: 20px; color: var(--muted2); text-align: right; line-height: 1; }
-.perf-date { font-size: 12px; color: var(--text); }
-.perf-time { font-size: 10px; margin-top: 1px; }
-.perf-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
-.seen-btn {
-  background: none; border: 1px solid var(--border); color: var(--muted);
-  font-family: var(--mono); font-size: 9px; padding: 3px 8px;
-  border-radius: 3px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.08em;
-  white-space: nowrap;
+.role-block-header{
+  background:var(--panel);
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;
 }
-.seen-btn:hover, .seen-btn.seen { border-color: rgba(100,170,220,0.4); color: var(--blue); background: rgba(100,170,220,0.08); }
+.role-block-header:hover{background:var(--surface)}
+.role-block-title{
+  font-size:14px;font-weight:500;color:var(--bright);
+}
+.role-block-total{
+  font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);
+}
+.role-actors-list{padding:8px 0;display:none}
+.role-actors-list.open{display:block}
+.role-actor-row{
+  display:flex;align-items:center;
+  padding:6px 16px;
+  border-top:1px solid var(--border);
+  gap:10px;
+}
+.role-actor-row:first-child{border-top:none}
+.role-actor-bar{flex:1;height:2px;background:var(--border)}
+.role-actor-bar-fill{height:100%;background:var(--teal)}
+.role-actor-n{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--muted);min-width:32px;text-align:right;
+}
 
-/* ── MILESTONE ── */
-.ms-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 9px 12px; background: var(--card);
-  border-radius: 5px; margin-bottom: 6px; border: 1px solid var(--border);
+/* ── MILESTONE TABLE ── */
+.mile-table{width:100%;border-collapse:collapse}
+.mile-table th{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--muted);text-align:left;
+  padding:8px 12px;border-bottom:1px solid var(--border);
 }
-.ms-icon { font-family: var(--serif); font-size: 20px; color: var(--gold); min-width: 44px; text-align: center; }
-.ms-info { flex: 1; }
-.ms-name { font-size: 12px; color: var(--text); }
-.ms-detail { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.mile-table td{
+  padding:8px 12px;font-size:13px;
+  border-bottom:1px solid var(--border);
+}
+.mile-table tr:last-child td{border-bottom:none}
+.mile-table tr:hover td{background:var(--panel)}
+.mile-n{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:300;color:var(--gold);
+}
 
-/* ── MY STATS PANE ── */
-.my-stats-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 12px; margin-bottom: 26px;
+/* ── MY LOG ── */
+.mylog-wrap{}
+.mylog-input-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.mylog-input-row input,.mylog-input-row select{
+  background:var(--panel);border:1px solid var(--border);
+  color:var(--text);padding:7px 10px;
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;
+  border-radius:2px;outline:none;
 }
-.seen-log-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 12px; border-radius: 4px; margin-bottom: 3px;
-  font-size: 12px; transition: background 0.15s;
+.mylog-input-row input:focus,.mylog-input-row select:focus{border-color:var(--gold-dim)}
+.btn-add{
+  background:var(--gold-dim);border:none;cursor:pointer;
+  color:var(--white);padding:7px 16px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:0.08em;border-radius:2px;
+  transition:background .2s;white-space:nowrap;
 }
-.seen-log-row:hover { background: rgba(255,255,255,0.03); }
-.seen-log-num { font-family: var(--serif); font-size: 18px; color: var(--muted2); min-width: 36px; text-align: right; }
-.del-btn {
-  background: none; border: none; color: var(--muted2);
-  cursor: pointer; font-size: 14px; padding: 0 4px; transition: color 0.15s;
+.btn-add:hover{background:var(--gold)}
+.mylog-list{}
+.mylog-item{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  padding:10px 0;border-bottom:1px solid var(--border);gap:8px;
 }
-.del-btn:hover { color: var(--red); }
-.my-chart-wrap { position: relative; height: 220px; margin-bottom: 24px; }
-.empty { padding: 36px 0; text-align: center; font-size: 12px; color: var(--muted); }
+.mylog-item:last-child{border-bottom:none}
+.mylog-perf{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:300;color:var(--gold);
+  min-width:36px;
+}
+.mylog-info{flex:1}
+.mylog-date{font-size:13px;color:var(--bright)}
+.mylog-memo{font-size:11px;color:var(--muted);margin-top:2px}
+.mylog-del{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:16px;padding:2px 6px;
+  transition:color .2s;
+}
+.mylog-del:hover{color:var(--red-bright)}
+.mylog-actor-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.mylog-actor-chip{
+  background:var(--panel);border:1px solid var(--border);
+  padding:2px 8px;
+  font-family:'DM Mono',monospace;font-size:9px;color:var(--dim);
+}
 
-/* ── MODAL ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.88); z-index: 200;
-  align-items: center; justify-content: center; padding: 20px;
+/* ── MY STATS ── */
+.my-stats-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px;margin-bottom:20px;
 }
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--surface); border: 1px solid rgba(200,169,110,0.22);
-  border-radius: 8px; padding: 26px; max-width: 540px; width: 100%;
-  max-height: 82vh; overflow-y: auto; position: relative;
+.my-stat-card{
+  background:var(--panel);border:1px solid var(--border);
+  padding:14px 16px;
 }
-.modal::-webkit-scrollbar { width: 4px; }
-.modal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-.modal-close {
-  position: absolute; top: 12px; right: 14px;
-  background: none; border: none; color: var(--muted);
-  font-size: 18px; cursor: pointer; line-height: 1;
+.my-stat-card .n{
+  font-family:'Cormorant Garamond',serif;
+  font-size:34px;font-weight:300;color:var(--bright);line-height:1;
 }
-.modal-close:hover { color: var(--text); }
-.modal-name { font-family: var(--serif); font-size: 26px; font-weight: 300; color: var(--gold); margin-bottom: 4px; }
-.divider { height: 1px; background: var(--border); margin: 16px 0; }
-.role-item { display: flex; justify-content: space-between; align-items: center; font-size: 11px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-.role-item:last-child { border-bottom: none; }
-.note-input {
-  width: 100%; background: var(--card); border: 1px solid var(--border);
-  color: var(--text); font-family: var(--mono); font-size: 11px;
-  padding: 8px 10px; border-radius: 4px; outline: none; resize: vertical;
-  min-height: 64px; transition: border-color 0.2s; margin-top: 6px;
+.my-stat-card .l{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;
+  margin-top:4px;
 }
-.note-input:focus { border-color: var(--gold-dim); }
+
+/* ── SETTINGS MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.8);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal-overlay.open{display:flex}
+.modal-box{
+  background:var(--dark);border:1px solid var(--border);
+  width:min(520px,100%);
+  padding:28px;
+  animation:fadeUp .2s ease;
+}
+@keyframes fadeUp{from{transform:translateY(10px);opacity:0}to{transform:none;opacity:1}}
+.modal-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:24px;font-weight:300;
+  color:var(--white);margin-bottom:20px;
+}
+.modal-label{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;display:block;
+}
+.modal-input{
+  width:100%;background:var(--panel);
+  border:1px solid var(--border);
+  color:var(--text);padding:9px 12px;
+  font-family:'DM Mono',monospace;font-size:12px;
+  border-radius:2px;outline:none;margin-bottom:16px;
+}
+.modal-input:focus{border-color:var(--gold-dim)}
+.modal-hint{
+  font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;
+}
+.modal-hint code{
+  background:var(--panel);padding:1px 5px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--teal-bright);border:1px solid var(--border);
+}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end}
+.btn-cancel{
+  background:none;border:1px solid var(--border);
+  color:var(--dim);cursor:pointer;
+  padding:7px 16px;font-family:'DM Mono',monospace;font-size:11px;
+  transition:all .2s;border-radius:2px;
+}
+.btn-cancel:hover{border-color:var(--border-light);color:var(--text)}
+.btn-save{
+  background:var(--gold-dim);border:none;cursor:pointer;
+  color:var(--white);padding:7px 20px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:0.08em;border-radius:2px;
+  transition:background .2s;
+}
+.btn-save:hover{background:var(--gold)}
+
+/* ── LOADING / EMPTY ── */
+.loading{
+  text-align:center;padding:60px 20px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--muted);letter-spacing:0.12em;
+}
+.loading .spin{
+  display:block;width:20px;height:20px;
+  border:1px solid var(--border);border-top-color:var(--gold);
+  border-radius:50%;margin:0 auto 16px;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{
+  text-align:center;padding:40px 20px;
+  color:var(--muted);font-size:13px;
+}
+
+/* ── TABS CONTENT ── */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ── SCHEDULE VIEW ── */
+.perf-list{}
+.perf-row{
+  display:flex;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--border);
+  gap:14px;font-size:13px;
+  cursor:pointer;transition:color .15s;
+}
+.perf-row:hover{color:var(--white)}
+.perf-num{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--muted);min-width:36px;
+}
+.perf-date{color:var(--bright);min-width:90px}
+.perf-time{
+  font-family:'DM Mono',monospace;font-size:10px;
+  color:var(--muted);min-width:24px;
+}
+.perf-actors{
+  display:flex;flex-wrap:wrap;gap:4px;flex:1;
+}
+.perf-chip{
+  background:var(--panel);
+  font-size:11px;color:var(--dim);
+  padding:1px 7px;
+}
+.perf-mine{
+  font-family:'DM Mono',monospace;font-size:9px;
+  color:var(--teal-bright);border:1px solid var(--teal);
+  padding:1px 6px;flex-shrink:0;
+}
 
 /* ── RESPONSIVE ── */
-@media (max-width: 600px) {
-  header, .body { padding-left: 18px; padding-right: 18px; }
-  nav { padding: 0 18px; }
-  h1 { font-size: 24px; }
-  .actor-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+@media(max-width:600px){
+  .main{padding:16px 14px}
+  header{padding:0 14px}
+  .nav-wrap{padding:0 14px}
+  .actor-grid{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .detail-panel{width:100vw}
 }
 </style>
 </head>
 <body>
-<div class="app-wrap">
 
-<!-- HEADER -->
 <header>
-  <div class="header-top">
-    <h1 id="admin-trigger" style="cursor:default;user-select:none">Sleep No More Seoul</h1>
-    <span class="header-sub">공연 기록 아카이브</span>
-  </div>
-  <!-- admin panel: hidden by default -->
-  <div id="admin-panel" style="display:none;margin-top:12px">
-    <div class="sheet-row">
-      <input class="sheet-input" id="sheetId" placeholder="구글 시트 ID 입력..." />
-      <button class="btn" onclick="adminSave()">저장 & 적용</button>
-      <button class="btn btn-sm" style="border-color:var(--border);color:var(--muted)" onclick="closeAdmin()">닫기</button>
+  <div class="logo" id="logoBtn">Sleep No More <span>Mckithan</span></div>
+  <div class="header-right">
+    <div class="sync-status">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncText">—</span>
     </div>
-    <div style="font-size:10px;color:var(--muted);margin-top:6px">시트 ID는 브라우저에 저장됩니다. 다음 방문부터 자동으로 불러옵니다.</div>
+    <button class="btn-settings" onclick="openSettings()" style="opacity:0;pointer-events:none;position:absolute">⚙ 설정</button>
   </div>
-  <div class="status" id="status"></div>
 </header>
 
-<!-- NAV -->
-<nav>
-  <button class="tab active" onclick="switchTab('overview',this)">개요</button>
-  <button class="tab" onclick="switchTab('actors',this)">배우</button>
-  <button class="tab" onclick="switchTab('roles',this)">역할</button>
-  <button class="tab" onclick="switchTab('schedule',this)">공연 일정</button>
-  <button class="tab" onclick="switchTab('milestones',this)">기념 공연</button>
-  <button class="tab" onclick="switchTab('my',this)">내 관람 기록 ✦</button>
-</nav>
+<div class="nav-wrap">
+  <button class="nav-tab active" onclick="showTab('overview')">개요</button>
+  <button class="nav-tab" onclick="showTab('actors')">배우</button>
+  <button class="nav-tab" onclick="showTab('roles')">역할</button>
+  <button class="nav-tab" onclick="showTab('milestones')">기념 공연</button>
+  <button class="nav-tab" onclick="showTab('schedule')">일정</button>
+  <button class="nav-tab" onclick="showTab('mylog')">내 기록</button>
+</div>
 
-<!-- BODY -->
-<div class="body">
+<main class="main">
 
   <!-- OVERVIEW -->
-  <div id="pane-overview" class="pane active">
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">총 공연 횟수</div><div class="stat-value" id="s-shows">—</div></div>
-      <div class="stat-card"><div class="stat-label">등록 배우</div><div class="stat-value" id="s-actors">—</div></div>
-      <div class="stat-card"><div class="stat-label">활성 배우</div><div class="stat-value" id="s-active">—</div></div>
-      <div class="stat-card"><div class="stat-label">체크아웃</div><div class="stat-value" id="s-co">—</div></div>
-      <div class="stat-card"><div class="stat-label">내 관람 횟수</div><div class="stat-value sm" id="s-my" style="color:var(--blue)">0</div></div>
+  <div class="tab-content active" id="tab-overview">
+    <div class="hero-stats" id="heroStats">
+      <div class="stat-cell"><div class="num gold" id="statTotal">—</div><div class="lbl">총 회차</div></div>
+      <div class="stat-cell"><div class="num" id="statActive">—</div><div class="lbl">활동 배우</div></div>
+      <div class="stat-cell"><div class="num" id="statCheckout">—</div><div class="lbl">체크아웃</div></div>
+      <div class="stat-cell"><div class="num" id="statRoles">—</div><div class="lbl">역할 수</div></div>
+      <div class="stat-cell"><div class="num" id="statMine">—</div><div class="lbl">내가 본 공연</div></div>
     </div>
-    <div class="sec">출연 횟수 TOP 10</div>
-    <div id="ov-bars"></div>
+    <div class="sec-title">출연 순위 <small>TOP 15</small></div>
+    <div id="overviewChart"></div>
   </div>
 
   <!-- ACTORS -->
-  <div id="pane-actors" class="pane">
-    <input class="search" id="actor-q" placeholder="배우 이름 검색..." oninput="filterActors()" />
-    <div class="sort-row">
-      <button class="sort-btn active" onclick="setActorSort('count',this)">횟수순</button>
-      <button class="sort-btn" onclick="setActorSort('name',this)">이름순</button>
-      <button class="sort-btn" onclick="setActorSort('checkin',this)">첫공순</button>
+  <div class="tab-content" id="tab-actors">
+    <div class="filter-row">
+      <input class="search-input" id="actorSearch" placeholder="배우 이름 검색..." oninput="renderActors()">
+      <select class="filter-sel" id="actorSort" onchange="renderActors()">
+        <option value="count">출연 횟수 순</option>
+        <option value="name">이름 순</option>
+        <option value="first">첫 공연 순</option>
+      </select>
+      <select class="filter-sel" id="actorFilter" onchange="renderActors()">
+        <option value="all">전체</option>
+        <option value="active">활동 중</option>
+        <option value="checkout">체크아웃</option>
+      </select>
     </div>
-    <div class="actor-grid" id="actor-grid"></div>
+    <div class="actor-grid" id="actorGrid"></div>
   </div>
 
   <!-- ROLES -->
-  <div id="pane-roles" class="pane">
-    <input class="search" id="role-q" placeholder="역할 이름 검색..." oninput="filterRoles()" />
-    <div id="roles-list"></div>
-  </div>
-
-  <!-- SCHEDULE -->
-  <div id="pane-schedule" class="pane">
-    <div class="sec-row">
-      <span class="sec">전체 공연 일정</span>
-      <label style="font-size:10px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:6px">
-        <input type="checkbox" id="only-seen" onchange="renderSchedule()" style="accent-color:var(--gold)" />
-        내가 본 공연만
-      </label>
+  <div class="tab-content" id="tab-roles">
+    <div class="filter-row">
+      <input class="search-input" id="roleSearch" placeholder="역할 검색..." oninput="renderRoles()" style="max-width:280px">
     </div>
-    <div id="schedule-list"></div>
+    <div id="roleList"></div>
   </div>
 
   <!-- MILESTONES -->
-  <div id="pane-milestones" class="pane">
-    <div class="sec">달성된 기념 공연</div>
-    <div id="ms-done"></div>
-    <div class="divider"></div>
-    <div class="sec" style="margin-top:16px">다음 기념 공연 예정</div>
-    <div id="ms-upcoming"></div>
-  </div>
-
-  <!-- MY RECORDS -->
-  <div id="pane-my" class="pane">
-    <div class="my-stats-grid">
-      <div class="stat-card"><div class="stat-label">총 관람 횟수</div><div class="stat-value sm" id="my-total" style="color:var(--blue)">0</div></div>
-      <div class="stat-card"><div class="stat-label">낮공연</div><div class="stat-value sm" id="my-day" style="color:var(--blue)">0</div></div>
-      <div class="stat-card"><div class="stat-label">밤공연</div><div class="stat-value sm" id="my-night" style="color:var(--blue)">0</div></div>
-      <div class="stat-card"><div class="stat-label">첫 관람</div><div class="stat-value" id="my-first" style="font-size:14px;color:var(--gold)">—</div></div>
-      <div class="stat-card"><div class="stat-label">최근 관람</div><div class="stat-value" id="my-last" style="font-size:14px;color:var(--gold)">—</div></div>
+  <div class="tab-content" id="tab-milestones">
+    <div class="filter-row">
+      <select class="filter-sel" id="mileTarget" onchange="renderMilestones()">
+        <option value="50">50회</option>
+        <option value="100" selected>100회</option>
+        <option value="150">150회</option>
+        <option value="200">200회</option>
+        <option value="250">250회</option>
+        <option value="300">300회</option>
+      </select>
     </div>
-
-    <div class="sec">자주 본 배우 TOP 10</div>
-    <div id="my-actor-bars" style="margin-bottom:26px"></div>
-
-    <div class="sec">관람한 공연 목록</div>
-    <div id="my-log"></div>
+    <div id="milestoneTable"></div>
   </div>
 
-</div><!-- /body -->
-</div><!-- /app-wrap -->
+  <!-- SCHEDULE -->
+  <div class="tab-content" id="tab-schedule">
+    <div class="filter-row">
+      <input class="search-input" id="schedSearch" placeholder="날짜 또는 배우 검색..." oninput="renderSchedule()" style="max-width:300px">
+      <select class="filter-sel" id="schedFilter" onchange="renderSchedule()">
+        <option value="all">전체</option>
+        <option value="mine">내가 본 공연</option>
+      </select>
+    </div>
+    <div class="perf-list" id="perfList"></div>
+  </div>
 
-<!-- ACTOR MODAL -->
-<div class="modal-overlay" id="actor-modal" onclick="closeModalOuter(event,'actor-modal')">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('actor-modal')">✕</button>
-    <div id="actor-modal-body"></div>
+  <!-- MY LOG -->
+  <div class="tab-content" id="tab-mylog">
+    <div class="my-stats-grid" id="myStatsGrid"></div>
+    <div class="sec-title">공연 기록 추가</div>
+    <div class="mylog-input-row">
+      <input type="number" id="logPerf" placeholder="회차 번호" min="1" style="width:120px">
+      <input type="text" id="logMemo" placeholder="메모 (선택)" style="flex:1;min-width:160px">
+      <button class="btn-add" onclick="addMyLog()">+ 추가</button>
+    </div>
+    <div class="sec-title" style="margin-top:8px">기록된 공연 <small id="myLogCount"></small></div>
+    <div class="mylog-list" id="myLogList"></div>
+  </div>
+
+</main>
+
+<!-- ACTOR DETAIL PANEL -->
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="detail-panel" id="detailPanel">
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+    <div id="detailContent"></div>
   </div>
 </div>
 
-<!-- SHOW MODAL (seen record) -->
-<div class="modal-overlay" id="show-modal" onclick="closeModalOuter(event,'show-modal')">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('show-modal')">✕</button>
-    <div id="show-modal-body"></div>
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal-box">
+    <!-- Password gate -->
+    <div id="pwGate">
+      <div class="modal-title">관리자 확인</div>
+      <label class="modal-label">비밀번호</label>
+      <input class="modal-input" id="pwInput" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPw()">
+      <div id="pwError" style="color:var(--red-bright);font-size:12px;margin-bottom:12px;display:none">비밀번호가 틀렸습니다</div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeSettings()">취소</button>
+        <button class="btn-save" onclick="checkPw()">확인</button>
+      </div>
+    </div>
+    <!-- Actual settings (hidden until pw correct) -->
+    <div id="pwContent" style="display:none">
+      <div class="modal-title">설정</div>
+      <label class="modal-label">Google Spreadsheet ID</label>
+      <input class="modal-input" id="sheetIdInput" placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms">
+      <div class="modal-hint">
+        스프레드시트 URL에서 <code>/d/</code>와 <code>/edit</code> 사이의 문자열을 입력하세요.<br>
+        시트는 <b>링크가 있는 모든 사용자 → 뷰어</b> 권한으로 설정해야 합니다.<br><br>
+        필요한 시트: <code>캐스팅 기록</code>, <code>배우 정보</code>
+      </div>
+      <label class="modal-label">시트 이름 (캐스팅)</label>
+      <input class="modal-input" id="castSheetName" placeholder="캐스팅 기록">
+      <label class="modal-label">시트 이름 (배우 정보)</label>
+      <input class="modal-input" id="actorSheetName" placeholder="배우 정보">
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeSettings()">취소</button>
+        <button class="btn-save" onclick="saveSettings()">저장 & 불러오기</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-/* ═══════════════════════════════
-   DATA
-═══════════════════════════════ */
-const MILESTONES = [50, 100, 150, 200, 250, 300, 400, 500];
-let DATA = { shows: [], actors: [], roles: [], actorSort: 'count' };
-
-/* localStorage: my seen records
-   shape: { [showNum]: { seen: bool, note: string } }
-*/
-function getMyRecords() {
-  try { return JSON.parse(localStorage.getItem('snm_seen') || '{}'); }
-  catch { return {}; }
-}
-function saveMyRecords(r) { localStorage.setItem('snm_seen', JSON.stringify(r)); }
-function toggleSeen(num) {
-  const r = getMyRecords();
-  if (r[num]?.seen) { delete r[num]; } else { r[num] = { seen: true, note: r[num]?.note || '' }; }
-  saveMyRecords(r); renderAll();
-}
-function saveNote(num, note) {
-  const r = getMyRecords();
-  if (!r[num]) r[num] = { seen: true, note };
-  else r[num].note = note;
-  saveMyRecords(r);
-}
-
-/* ═══════════════════════════════
-   DEMO DATA
-═══════════════════════════════ */
-const DEMO = {
-  shows: [
-    {num:1,date:'2025.07.24',time:'밤'},{num:2,date:'2025.07.26',time:'낮'},
-    {num:3,date:'2025.07.26',time:'밤'},{num:4,date:'2025.07.30',time:'밤'},
-    {num:5,date:'2025.08.01',time:'밤'},{num:6,date:'2025.08.02',time:'낮'},
-    {num:7,date:'2025.08.02',time:'밤'},{num:8,date:'2025.08.06',time:'밤'},
-    {num:9,date:'2025.08.07',time:'밤'},{num:10,date:'2025.08.09',time:'낮'},
-    {num:11,date:'2025.08.09',time:'밤'},{num:12,date:'2025.08.13',time:'밤'},
-    {num:13,date:'2025.08.14',time:'밤'},{num:14,date:'2025.08.15',time:'밤'},
-    {num:15,date:'2025.08.16',time:'낮'},{num:16,date:'2025.08.16',time:'밤'},
-    {num:17,date:'2025.08.17',time:'낮'},{num:18,date:'2025.08.21',time:'밤'},
-    {num:19,date:'2025.08.22',time:'밤'},{num:20,date:'2025.08.23',time:'낮'},
-    {num:21,date:'2025.08.23',time:'밤'},{num:22,date:'2025.08.24',time:'낮'},
-    {num:23,date:'2025.08.27',time:'밤'},{num:24,date:'2025.08.28',time:'밤'},
-    {num:25,date:'2025.08.29',time:'밤'},{num:26,date:'2025.08.30',time:'밤'},
-    {num:27,date:'2025.08.31',time:'낮'},{num:28,date:'2025.09.03',time:'밤'},
-    {num:29,date:'2025.09.04',time:'밤'},{num:30,date:'2025.09.05',time:'밤'},
-    {num:31,date:'2025.09.06',time:'낮'},{num:32,date:'2025.09.06',time:'밤'},
-    {num:33,date:'2025.09.07',time:'낮'},{num:34,date:'2025.09.10',time:'밤'},
-    {num:35,date:'2025.09.11',time:'밤'},{num:36,date:'2025.09.12',time:'밤'},
-    {num:37,date:'2025.09.13',time:'낮'},{num:38,date:'2025.09.13',time:'밤'},
-    {num:39,date:'2025.09.14',time:'낮'},{num:40,date:'2025.09.17',time:'밤'},
-    {num:41,date:'2025.09.18',time:'밤'},{num:42,date:'2025.09.19',time:'밤'},
-    {num:43,date:'2025.09.20',time:'낮'},{num:44,date:'2025.09.20',time:'밤'},
-    {num:45,date:'2025.09.21',time:'낮'},{num:46,date:'2025.09.24',time:'밤'},
-    {num:47,date:'2025.09.25',time:'밤'},{num:48,date:'2025.09.26',time:'밤'},
-    {num:49,date:'2025.09.27',time:'낮'},{num:50,date:'2025.09.27',time:'밤'}
-  ],
-  actors: [
-    {name:'가브리엘',count:5,checkout:false,checkinNum:2,checkinDate:'2025.07.26',checkinTime:'낮'},
-    {name:'김도현',count:4,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'김수정',count:46,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'김영은',count:40,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'김태양',count:50,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤',milestones:[{n:50,date:'2025.09.27',time:'밤'}]},
-    {name:'노바',count:35,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'니콜라스',count:42,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'데이비드',count:19,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'마야',count:23,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'매트',count:23,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'박상하',count:48,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'샘',count:49,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'샤롤',count:14,checkout:false,checkinNum:2,checkinDate:'2025.07.26',checkinTime:'낮'},
-    {name:'션',count:30,checkout:false,checkinNum:3,checkinDate:'2025.07.26',checkinTime:'밤'},
-    {name:'손대민',count:23,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'스티비',count:27,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'신상미',count:43,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'앨리G',count:48,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'앨리C',count:47,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'엘레니',count:0,checkout:false,checkinNum:null,checkinDate:null,checkinTime:null},
-    {name:'오드리',count:19,checkout:true,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤',checkoutDate:'2025.08.27',checkoutShowNum:23},
-    {name:'오마',count:46,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'이선재',count:41,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'장준혁',count:46,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'정필균',count:11,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'제시카',count:39,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'조던',count:34,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'주드',count:44,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'총명주',count:39,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'칼',count:4,checkout:true,checkinNum:5,checkinDate:'2025.08.01',checkinTime:'밤',checkoutDate:'2025.08.27',checkoutShowNum:23},
-    {name:'크리스',count:44,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'펀',count:44,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'표혜인',count:25,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'한세인',count:44,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'허준환',count:38,checkout:false,checkinNum:1,checkinDate:'2025.07.24',checkinTime:'밤'},
-    {name:'헤일리 성',count:7,checkout:false,checkinNum:9,checkinDate:'2025.08.07',checkinTime:'밤'},
-    {name:'김예슬',count:0,checkout:false,checkinNum:null,checkinDate:null,checkinTime:null}
-  ],
-  roles: [
-    {name:'맥베스',actors:[{name:'니콜라스',type:'레귤러/PINK',count:20},{name:'크리스',type:'레귤러/BLUE',count:23},{name:'매트',type:'스윙',count:0},{name:'션',type:'스윙',count:7},{name:'데이비드',type:'스윙',count:0}]},
-    {name:'레이디 맥베스',actors:[{name:'마야',type:'레귤러/PINK',count:21},{name:'앨리G',type:'레귤러/BLUE',count:25},{name:'헤일리 성',type:'스윙',count:0},{name:'가브리엘',type:'스윙',count:2}]},
-    {name:'맥더프',actors:[{name:'총명주',type:'레귤러/PINK',count:20},{name:'장준혁',type:'레귤러/BLUE',count:20},{name:'손대민',type:'스윙',count:3},{name:'션',type:'스윙',count:8},{name:'스티비',type:'스윙',count:0},{name:'데이비드',type:'스윙',count:0}]},
-    {name:'레이디 맥더프',actors:[{name:'이선재',type:'레귤러/PINK',count:23},{name:'펀',type:'레귤러/BLUE',count:24},{name:'표혜인',type:'스윙',count:2},{name:'샤롤',type:'스윙',count:1},{name:'엘레니',type:'스윙',count:0}]},
-    {name:'뱅쿠오',actors:[{name:'허준환',type:'레귤러/PINK',count:20},{name:'정필균',type:'레귤러/BLUE',count:9},{name:'손대민',type:'스윙',count:0},{name:'매트',type:'스윙',count:8},{name:'션',type:'스윙',count:0},{name:'스티비',type:'스윙',count:13}]},
-    {name:'말콤',actors:[{name:'박상하',type:'레귤러/PINK',count:26},{name:'주드',type:'레귤러/BLUE',count:22},{name:'김태양',type:'스윙',count:0},{name:'매트',type:'스윙',count:0},{name:'칼',type:'스윙',count:2}]},
-    {name:'던컨',actors:[{name:'오마',type:'레귤러/PINK',count:23},{name:'샘',type:'레귤러/BLUE',count:24},{name:'김태양',type:'스윙',count:3},{name:'데이비드',type:'스윙',count:0},{name:'스티비',type:'스윙',count:0}]},
-    {name:'포터',actors:[{name:'주드',type:'레귤러/PINK',count:22},{name:'오마',type:'레귤러/BLUE',count:23},{name:'데이비드',type:'스윙',count:4},{name:'스티비',type:'스윙',count:1}]},
-    {name:'댄버스',actors:[{name:'신상미',type:'레귤러/PINK',count:24},{name:'김영은',type:'레귤러/BLUE',count:19},{name:'이선재',type:'스윙',count:0},{name:'헤일리 성',type:'스윙',count:0},{name:'가브리엘',type:'스윙',count:0},{name:'샤롤',type:'스윙',count:7}]},
-    {name:'아그네스',actors:[{name:'펀',type:'레귤러/PINK',count:20},{name:'노바',type:'레귤러/BLUE',count:19},{name:'한세인',type:'스윙',count:4},{name:'헤일리 성',type:'스윙',count:4},{name:'샤롤',type:'스윙',count:2}]},
-    {name:'헤카테',actors:[{name:'제시카',type:'레귤러/PINK',count:20},{name:'앨리C',type:'레귤러/BLUE',count:17},{name:'표혜인',type:'스윙',count:8},{name:'가브리엘',type:'스윙',count:3},{name:'마야',type:'스윙',count:1}]},
-    {name:'볼드위치',actors:[{name:'김영은',type:'레귤러/PINK',count:21},{name:'김수정',type:'레귤러/BLUE',count:24},{name:'헤일리 성',type:'스윙',count:3},{name:'샤롤',type:'스윙',count:1},{name:'앨리C',type:'스윙',count:1}]},
-    {name:'보이위치',actors:[{name:'김도현',type:'레귤러/PINK',count:3},{name:'조던',type:'레귤러/BLUE',count:19},{name:'손대민',type:'스윙',count:16},{name:'데이비드',type:'스윙',count:0},{name:'스티비',type:'스윙',count:13},{name:'매트',type:'스윙',count:0}]},
-    {name:'페이트위치',actors:[{name:'노바',type:'레귤러/PINK',count:16},{name:'신상미',type:'레귤러/BLUE',count:19},{name:'표혜인',type:'스윙',count:8},{name:'헤일리 성',type:'스윙',count:0},{name:'샤롤',type:'스윙',count:0}]},
-    {name:'풀튼',actors:[{name:'크리스',type:'레귤러/PINK',count:21},{name:'김도현',type:'레귤러/BLUE',count:1},{name:'손대민',type:'스윙',count:0},{name:'데이비드',type:'스윙',count:15},{name:'션',type:'스윙',count:13}]},
-    {name:'스픽이지',actors:[{name:'조던',type:'레귤러/PINK',count:15},{name:'총명주',type:'레귤러/BLUE',count:19},{name:'매트',type:'스윙',count:15},{name:'션',type:'스윙',count:2}]},
-    {name:'박제사',actors:[{name:'장준혁',type:'레귤러/PINK',count:26},{name:'허준환',type:'레귤러/BLUE',count:18},{name:'손대민',type:'스윙',count:4},{name:'데이비드',type:'스윙',count:0},{name:'매트',type:'스윙',count:0},{name:'션',type:'스윙',count:0}]},
-    {name:'너스',actors:[{name:'앨리G',type:'레귤러/PINK',count:23},{name:'이선재',type:'레귤러/BLUE',count:18},{name:'표혜인',type:'스윙',count:2},{name:'마야',type:'스윙',count:1},{name:'김영은',type:'스윙',count:0},{name:'헤일리 성',type:'스윙',count:0},{name:'가브리엘',type:'스윙',count:0}]},
-    {name:'매트론',actors:[{name:'김수정',type:'레귤러/PINK',count:22},{name:'한세인',type:'레귤러/BLUE',count:22},{name:'표혜인',type:'스윙',count:0},{name:'샤롤',type:'스윙',count:3},{name:'데이비드',type:'스윙',count:0}]},
-    {name:'벨홉',actors:[{name:'한세인',type:'레귤러/PINK',count:22},{name:'김태양',type:'레귤러/BLUE',count:21},{name:'손대민',type:'스윙',count:0},{name:'표혜인',type:'스윙',count:5},{name:'정필균',type:'스윙',count:2}]},
-    {name:'제 3 간호사',actors:[{name:'한세인',type:'레귤러/PINK',count:2},{name:'김태양',type:'레귤러/BLUE',count:7},{name:'손대민',type:'스윙',count:0},{name:'표혜인',type:'스윙',count:5},{name:'헤일리 성',type:'스윙',count:0}]},
-    {name:'WIB',actors:[{name:'앨리C',type:'레귤러/PINK',count:29},{name:'제시카',type:'레귤러/BLUE',count:19},{name:'앨리G',type:'스윙',count:0},{name:'앨레니',type:'스윙',count:0}]},
-    {name:'MIB',actors:[{name:'샘',type:'레귤러/PINK',count:25},{name:'니콜라스',type:'레귤러/BLUE',count:22},{name:'스티비',type:'스윙',count:0},{name:'주드',type:'스윙',count:0}]},
-    {name:'호스트',actors:[{name:'김태양',type:'레귤러/PINK',count:26},{name:'박상하',type:'레귤러/BLUE',count:22},{name:'손대민',type:'스윙',count:0},{name:'표혜인',type:'스윙',count:0},{name:'한세인',type:'스윙',count:0},{name:'김예슬',type:'스윙',count:0},{name:'칼',type:'스윙',count:2}]}
-  ]
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let CFG = {
+  sheetId: localStorage.getItem('snm_sheetId') || '',
+  castSheet: localStorage.getItem('snm_castSheet') || '캐스팅 기록',
+  actorSheet: localStorage.getItem('snm_actorSheet') || '배우 정보',
 };
+let DATA = null;        // processed data
+let MY_LOG = JSON.parse(localStorage.getItem('snm_mylog') || '[]');
 
-/* ═══════════════════════════════
-   SHEET LOADING
-═══════════════════════════════ */
-function setStatus(type, msg) {
-  const el = document.getElementById('status');
-  el.className = 'status ' + type;
-  el.textContent = msg;
-}
-
-function loadSheet() { /* replaced below by admin-aware version */ }
-
-function parseCastingSheet(json) {
-  /* ── 캐스팅 일정 시트 파싱 ──
-     Row 0 : 회차 번호 (1, 2, 3 ...)
-     Row 1 : 날짜
-     Row 2 : 낮/밤
-     Row 3+ : 역할명(col0), 회차별 배우이름(col1~)
-  */
-  const rows = json.table?.rows || [];
-  if (rows.length < 3) return;
-
-  const numRow  = rows[0];   // 회차 번호
-  const dateRow = rows[1];   // 날짜
-  const timeRow = rows[2];   // 낮/밤
-
-  // 공연 목록 빌드 (col1 부터)
-  const shows = [];
-  for (let c = 1; c < (numRow.c?.length || 0); c++) {
-    const num  = parseInt(numRow.c[c]?.v);
-    const raw  = dateRow.c[c]?.v;
-    const time = timeRow.c[c]?.v || '';
-    if (!num || !raw) continue;
-    // 날짜 포맷: 구글 시트 gviz는 Date(yyyy,m,d) 형태로 오거나 string으로 옴
-    let date = '';
-    if (typeof raw === 'string' && raw.startsWith('Date(')) {
-      const parts = raw.replace('Date(','').replace(')','').split(',');
-      const y = parts[0], m = String(parseInt(parts[1])+1).padStart(2,'0'), d = String(parts[2]).padStart(2,'0');
-      date = `${y}.${m}.${d}`;
-    } else if (typeof raw === 'string') {
-      date = raw.replace(/-/g, '.');
-    } else {
-      date = String(raw);
-    }
-    shows.push({ num, date, time, col: c });
-  }
-  shows.sort((a,b) => a.num - b.num);
-
-  // 배우별 출연 회차 set & 첫/막 공연 계산
-  // showSet: name → Set of show nums (중복 제거용)
-  const showSetMap = {}; // name → Set<num>
-  const showObjMap = {}; // name → { firstShow, lastShow }
-  const roleMap    = {}; // roleName → { actorName → count }
-  const ROLES_START = 3;
-
-  for (let r = ROLES_START; r < rows.length; r++) {
-    const row = rows[r];
-    if (!row.c) continue;
-    const roleName = row.c[0]?.v;
-    if (!roleName || roleName.trim() === '') continue;
-    if (!roleMap[roleName]) roleMap[roleName] = {};
-
-    shows.forEach(s => {
-      const raw = row.c[s.col]?.v || '';
-      // 셀에 여러 배우가 있을 수 있음 (예: "크리스 > 니콜라스")
-      const names = raw.split('>').map(n => n.trim()).filter(n => n && n !== '-');
-      names.forEach(name => {
-        // 역할별 출연 횟수 (역할 통계용 — 역할은 중복 허용)
-        roleMap[roleName][name] = (roleMap[roleName][name] || 0) + 1;
-
-        // 배우 총 출연 횟수는 회차 단위 중복 제거
-        if (!showSetMap[name]) {
-          showSetMap[name] = new Set();
-          showObjMap[name] = { firstShow: null, lastShow: null };
-        }
-        showSetMap[name].add(s.num);
-        const info = showObjMap[name];
-        if (!info.firstShow || s.num < info.firstShow.num) info.firstShow = s;
-        if (!info.lastShow  || s.num > info.lastShow.num)  info.lastShow  = s;
+// ══════════════════════════════════════════════
+//  FETCH & PROCESS
+// ══════════════════════════════════════════════
+async function fetchSheet(sheetName) {
+  const url = `https://docs.google.com/spreadsheets/d/${CFG.sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+  const res = await fetch(url);
+  const txt = await res.text();
+  const json = JSON.parse(txt.slice(47, -2));
+  const cols = json.table.cols.map(c => c.label);
+  return json.table.rows
+    .map(r => {
+      const obj = {};
+      cols.forEach((h, i) => {
+        const cell = r.c[i];
+        obj[h] = cell ? (cell.v !== null && cell.v !== undefined ? String(cell.v) : '') : '';
       });
-    });
-  }
-
-  // 체크아웃 정보는 출연 통계 시트에서 오지만 여기서는 없으므로 보존
-  const existingCheckouts = {};
-  DATA.actors.forEach(a => { if (a.checkout) existingCheckouts[a.name] = a; });
-
-  DATA.shows = shows.map(s => ({ num: s.num, date: s.date, time: s.time }));
-
-  DATA.actors = Object.entries(showSetMap).map(([name, numSet]) => {
-    const info = showObjMap[name];
-    return {
-      name,
-      count: numSet.size,   // ← 회차 기준 중복 제거된 실제 출연 횟수
-      checkout: !!existingCheckouts[name],
-      checkinNum:  info.firstShow?.num  || null,
-      checkinDate: info.firstShow?.date || null,
-      checkinTime: info.firstShow?.time || null,
-      checkoutShowNum: existingCheckouts[name]?.checkoutShowNum || null,
-      checkoutDate:    existingCheckouts[name]?.checkoutDate    || null,
-    };
-  }).sort((a,b) => b.count - a.count);
-
-  DATA.roles = Object.entries(roleMap).map(([name, actorCounts]) => ({
-    name,
-    actors: Object.entries(actorCounts).map(([aName, cnt]) => ({
-      name: aName, type: '출연', count: cnt
-    })).sort((a,b) => b.count - a.count)
-  }));
+      return obj;
+    })
+    .filter(r => Object.values(r).some(v => String(v).trim()));
 }
 
-function parseCheckoutSheet(json) {
-  /* 출연 통계 시트에서 체크아웃 여부만 읽어 DATA.actors에 반영 */
-  const rows = json.table?.rows || [];
-  rows.forEach(r => {
-    const status = r.c?.[0]?.v || '';
-    const name   = r.c?.[1]?.v || '';
-    if (!name || status !== '체크아웃') return;
-    const actor = DATA.actors.find(a => a.name === name);
-    if (actor) actor.checkout = true;
+function processData(castRows, actorRows) {
+  // Checkout set
+  const checkoutSet = new Set();
+  actorRows.forEach(r => {
+    const name = Object.values(r)[0]?.trim();
+    const status = Object.values(r)[1]?.trim();
+    if (name && status === '체크아웃') checkoutSet.add(name);
   });
+
+  // Performances map: perfNum → {num, date, time, cast:[{role,actor}]}
+  const perfs = {};
+  // Actor stats
+  const actorCounts = {};      // actor → total unique perfs
+  const actorRoles = {};       // actor → {role → count}
+  const actorPerfNums = {};    // actor → sorted [perfNum]
+  const roleCasts = {};        // role → {actor → count}
+  const perfDates = {};        // perfNum → {date, time}
+
+  castRows.forEach(r => {
+    const num = parseInt(r['회차번호'] || r[Object.keys(r)[0]]);
+    const date = (r['날짜'] || r[Object.keys(r)[1]] || '').trim();
+    const time = (r['시간대'] || r[Object.keys(r)[2]] || '').trim();
+    const role = (r['역할'] || r[Object.keys(r)[3]] || '').trim();
+    const actor = (r['배우'] || r[Object.keys(r)[4]] || '').trim();
+    if (!actor || !role || !num) return;
+
+    if (!perfs[num]) perfs[num] = { num, date, time, cast: [] };
+    perfs[num].cast.push({ role, actor });
+    perfDates[num] = { date, time };
+
+    if (!actorRoles[actor]) actorRoles[actor] = {};
+    actorRoles[actor][role] = (actorRoles[actor][role] || 0) + 1;
+
+    if (!actorPerfNums[actor]) actorPerfNums[actor] = new Set();
+    actorPerfNums[actor].add(num);
+
+    if (!roleCasts[role]) roleCasts[role] = {};
+    roleCasts[role][actor] = (roleCasts[role][actor] || 0) + 1;
+  });
+
+  // Count unique perfs per actor
+  Object.entries(actorPerfNums).forEach(([actor, nums]) => {
+    actorCounts[actor] = nums.size;
+  });
+
+  // First/last perf per actor
+  const actorFirstLast = {};
+  Object.entries(actorPerfNums).forEach(([actor, numsSet]) => {
+    const sorted = [...numsSet].sort((a, b) => a - b);
+    const first = sorted[0], last = sorted[sorted.length - 1];
+    actorFirstLast[actor] = {
+      firstNum: first, firstDate: perfDates[first]?.date, firstTime: perfDates[first]?.time,
+      lastNum: last, lastDate: perfDates[last]?.date, lastTime: perfDates[last]?.time,
+    };
+  });
+
+  // Milestones per actor
+  const milestones = {};
+  Object.entries(actorPerfNums).forEach(([actor, numsSet]) => {
+    const sorted = [...numsSet].sort((a, b) => a - b);
+    milestones[actor] = {};
+    [50, 100, 150, 200, 250, 300].forEach(n => {
+      if (sorted.length >= n) {
+        const pNum = sorted[n - 1];
+        milestones[actor][n] = { perfNum: pNum, date: perfDates[pNum]?.date, time: perfDates[pNum]?.time };
+      }
+    });
+  });
+
+  return {
+    perfs, actorCounts, actorRoles, actorPerfNums,
+    actorFirstLast, roleCasts, checkoutSet, milestones, perfDates,
+    totalPerfs: Object.keys(perfs).length,
+  };
 }
 
-function loadDemo() {
-  DATA.shows  = DEMO.shows;
-  DATA.actors = DEMO.actors.filter(a => a.name && a.name !== '.');
-  DATA.roles  = DEMO.roles;
-  setStatus('ok', `데모 데이터 로드 완료 — ${DATA.shows.length}회 공연 · 배우 ${DATA.actors.filter(a=>a.count>0).length}명`);
-  renderAll();
+async function loadData() {
+  if (!CFG.sheetId) return;
+  setSyncStatus('loading');
+  try {
+    const [castRows, actorRows] = await Promise.all([
+      fetchSheet(CFG.castSheet),
+      fetchSheet(CFG.actorSheet),
+    ]);
+    DATA = processData(castRows, actorRows);
+    setSyncStatus('live');
+    renderAll();
+  } catch (e) {
+    setSyncStatus('error');
+    console.error(e);
+  }
 }
 
-/* ═══════════════════════════════
-   RENDER ALL
-═══════════════════════════════ */
+// ══════════════════════════════════════════════
+//  RENDER ALL
+// ══════════════════════════════════════════════
 function renderAll() {
   renderOverview();
   renderActors();
   renderRoles();
-  renderSchedule();
   renderMilestones();
-  renderMy();
+  renderSchedule();
+  renderMyLog();
 }
 
-/* ═══════════════════════════════
-   OVERVIEW
-═══════════════════════════════ */
+// ── OVERVIEW ──
 function renderOverview() {
-  const active = DATA.actors.filter(a => a.count > 0);
-  const cos    = active.filter(a => a.checkout);
-  const rec    = getMyRecords();
-  const myCount = Object.values(rec).filter(r => r.seen).length;
+  if (!DATA) return;
+  const { totalPerfs, actorCounts, checkoutSet, roleCasts } = DATA;
+  const active = Object.keys(actorCounts).filter(a => !checkoutSet.has(a)).length;
+  document.getElementById('statTotal').textContent = totalPerfs;
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statCheckout').textContent = checkoutSet.size;
+  document.getElementById('statRoles').textContent = Object.keys(roleCasts).length;
+  document.getElementById('statMine').textContent = MY_LOG.length;
 
-  document.getElementById('s-shows').textContent  = DATA.shows.length;
-  document.getElementById('s-actors').textContent = active.length;
-  document.getElementById('s-active').textContent = active.filter(a=>!a.checkout).length;
-  document.getElementById('s-co').textContent     = cos.length;
-  document.getElementById('s-my').textContent     = myCount;
-
-  const top10 = [...active].sort((a,b) => b.count - a.count).slice(0,10);
-  const max   = top10[0]?.count || 1;
-  document.getElementById('ov-bars').innerHTML = top10.map(a => `
-    <div class="bar-row">
-      <div class="bar-name">${a.name}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(a.count/max*100)}%"></div></div>
-      <div class="bar-num">${a.count}</div>
-    </div>`).join('');
+  const sorted = Object.entries(actorCounts).sort((a, b) => b[1] - a[1]).slice(0, 15);
+  const max = sorted[0]?.[1] || 1;
+  let html = '';
+  sorted.forEach(([actor, cnt]) => {
+    const pct = Math.round(cnt / max * 100);
+    const out = checkoutSet.has(actor);
+    html += `<div class="role-bar-row" style="margin-bottom:10px">
+      <div class="role-bar-name" style="width:80px;font-size:13px;color:${out?'var(--muted)':'var(--bright)'}">${actor}</div>
+      <div class="role-bar-track" style="height:4px">
+        <div class="role-bar-fill" style="width:${pct}%;background:${out?'var(--muted)':'var(--gold-dim)'}"></div>
+      </div>
+      <div class="role-bar-n">${cnt}</div>
+    </div>`;
+  });
+  document.getElementById('overviewChart').innerHTML = html;
 }
 
-/* ═══════════════════════════════
-   ACTORS
-═══════════════════════════════ */
-function actorCards(list) {
-  const rec = getMyRecords();
-  /* count how many times user saw this actor */
-  const myActorCounts = {};
-  DATA.shows.forEach(s => {
-    if (!rec[s.num]?.seen) return;
-    DATA.roles.forEach(role => {
-      role.actors.forEach(ra => {
-        if (ra.count > 0) myActorCounts[ra.name] = (myActorCounts[ra.name]||0) + 1;
-      });
-    });
+// ── ACTORS ──
+function renderActors() {
+  if (!DATA) return;
+  const { actorCounts, actorFirstLast, checkoutSet } = DATA;
+  const q = document.getElementById('actorSearch').value.trim().toLowerCase();
+  const sort = document.getElementById('actorSort').value;
+  const filter = document.getElementById('actorFilter').value;
+
+  let list = Object.entries(actorCounts).filter(([a]) => {
+    if (q && !a.toLowerCase().includes(q)) return false;
+    if (filter === 'active' && checkoutSet.has(a)) return false;
+    if (filter === 'checkout' && !checkoutSet.has(a)) return false;
+    return true;
   });
 
-  return list.map(a => {
-    const ms = MILESTONES.filter(m => m <= a.count);
-    const myC = myActorCounts[a.name] || 0;
-    return `
-    <div class="actor-card ${a.checkout?'checkout':''}" onclick="openActorModal('${a.name.replace(/'/g,"\\'")}')">
-      <div class="actor-count">${a.count}<span class="unit">회</span></div>
-      <div class="actor-name">${a.name}</div>
-      ${a.checkinDate ? `<span class="badge checkin">첫공 #${a.checkinNum}</span>` : ''}
-      ${a.checkout    ? `<span class="badge checkout">체크아웃</span>` : ''}
-      ${ms.map(m=>`<span class="badge gold">${m}회</span>`).join('')}
-      ${myC > 0 ? `<div class="my-count-badge">👁 내가 본 횟수 ${myC}</div>` : ''}
+  if (sort === 'count') list.sort((a, b) => b[1] - a[1]);
+  else if (sort === 'name') list.sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+  else list.sort((a, b) => (actorFirstLast[a[0]]?.firstNum||999) - (actorFirstLast[b[0]]?.firstNum||999));
+
+  if (!list.length) {
+    document.getElementById('actorGrid').innerHTML = '<div class="empty">검색 결과 없음</div>';
+    return;
+  }
+
+  document.getElementById('actorGrid').innerHTML = list.map(([actor, cnt]) => {
+    const fl = actorFirstLast[actor] || {};
+    const out = checkoutSet.has(actor);
+    return `<div class="actor-card${out?' checkout':''}" onclick="showActorDetail('${actor.replace(/'/g,"\\'")}')">
+      <div>
+        <div class="actor-name">${actor}${out?'<span class="badge badge-out">OUT</span>':''}</div>
+        <div class="actor-meta">
+          첫 공연 ${fl.firstDate||'—'} ${fl.firstTime||''}<br>
+          ${out?`막공 ${fl.lastDate||'—'} ${fl.lastTime||''}`:
+                `최근 ${fl.lastDate||'—'} ${fl.lastTime||''}`}
+        </div>
+      </div>
+      <div class="actor-count${out?' checkout-count':''}">${cnt}</div>
     </div>`;
   }).join('');
 }
 
-function filterActors() {
-  const q = document.getElementById('actor-q').value.toLowerCase();
-  let list = DATA.actors.filter(a => (a.count>0||a.checkout) && a.name.toLowerCase().includes(q));
-  sortList(list, DATA.actorSort);
-  document.getElementById('actor-grid').innerHTML = actorCards(list) || '<div class="empty">검색 결과 없음</div>';
-}
+// ── ACTOR DETAIL ──
+function showActorDetail(actor) {
+  if (!DATA) return;
+  const { actorCounts, actorRoles, actorFirstLast, checkoutSet, milestones } = DATA;
+  const cnt = actorCounts[actor] || 0;
+  const fl = actorFirstLast[actor] || {};
+  const out = checkoutSet.has(actor);
+  const roles = actorRoles[actor] || {};
+  const ms = milestones[actor] || {};
+  const maxRole = Math.max(...Object.values(roles), 1);
 
-function setActorSort(by, btn) {
-  DATA.actorSort = by;
-  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  filterActors();
-}
+  const mychips = Object.entries(ms).sort((a,b)=>a[0]-b[0]).map(([n,m]) =>
+    `<div class="milestone-chip">${n}회 · ${m.date} ${m.time}</div>`
+  ).join('');
 
-function sortList(arr, by) {
-  if (by === 'count')  arr.sort((a,b) => b.count - a.count);
-  if (by === 'name')   arr.sort((a,b) => a.name.localeCompare(b.name,'ko'));
-  if (by === 'checkin') arr.sort((a,b) => (a.checkinNum||999) - (b.checkinNum||999));
-}
+  const roleBars = Object.entries(roles).sort((a,b)=>b[1]-a[1]).map(([role,n])=>
+    `<div class="role-bar-row">
+      <div class="role-bar-name">${role}</div>
+      <div class="role-bar-track"><div class="role-bar-fill" style="width:${Math.round(n/maxRole*100)}%"></div></div>
+      <div class="role-bar-n">${n}</div>
+    </div>`
+  ).join('');
 
-function renderActors() {
-  let list = DATA.actors.filter(a => a.count>0 || a.checkout);
-  sortList(list, DATA.actorSort);
-  document.getElementById('actor-grid').innerHTML = actorCards(list) || '<div class="empty">데이터 없음</div>';
-}
-
-/* ═══════════════════════════════
-   ROLES
-═══════════════════════════════ */
-function renderRoles(q='') {
-  const roles = DATA.roles.filter(r => r.name.toLowerCase().includes(q.toLowerCase()));
-  document.getElementById('roles-list').innerHTML = roles.map(role => {
-    const filtered = role.actors.filter(a => a.count > 0).sort((a,b) => b.count - a.count);
-    const total    = role.actors.reduce((s,a) => s+a.count, 0);
-    return `
-    <div class="role-card">
-      <div class="role-title">${role.name} <span style="font-size:12px;color:var(--muted);font-family:var(--mono);font-weight:300">총 ${total}회</span></div>
-      ${filtered.map(a => `
-        <div class="role-actor-row">
-          <div><span>${a.name}</span><span class="role-type">${a.type}</span></div>
-          <span class="role-cnt">${a.count}회</span>
-        </div>`).join('') || '<div style="font-size:11px;color:var(--muted)">출연 기록 없음</div>'}
-    </div>`;
-  }).join('') || '<div class="empty">검색 결과 없음</div>';
-}
-
-function filterRoles() { renderRoles(document.getElementById('role-q').value); }
-
-/* ═══════════════════════════════
-   SCHEDULE
-═══════════════════════════════ */
-function renderSchedule() {
-  const rec      = getMyRecords();
-  const onlySeen = document.getElementById('only-seen')?.checked;
-  const shows    = onlySeen ? DATA.shows.filter(s => rec[s.num]?.seen) : DATA.shows;
-
-  document.getElementById('schedule-list').innerHTML = shows.map(s => {
-    const isSeen   = !!rec[s.num]?.seen;
-    const timeClr  = s.time === '밤' ? 'color:rgba(200,169,110,0.7)' : 'color:rgba(140,180,230,0.7)';
-    const msBadges = MILESTONES.filter(m => m === s.num).map(m => `<span class="badge gold">${m}회</span>`).join('');
-    return `
-    <div class="perf-row ${isSeen?'my-perf':''}" onclick="openShowModal(${s.num})">
-      <div class="perf-num">${s.num}</div>
-      <div>
-        <div class="perf-date">${s.date}</div>
-        <div class="perf-time" style="${timeClr}">${s.time === '밤' ? '🌙 밤공연' : '☀ 낮공연'}</div>
+  document.getElementById('detailContent').innerHTML = `
+    <div class="detail-actor-name">${actor}</div>
+    <div class="detail-sub">총 ${cnt}회 출연${out?' · 체크아웃':''}</div>
+    <div class="checkin-row">
+      <div class="checkin-cell">
+        <div class="ci-label">체크인 · 첫 공연</div>
+        <div class="ci-date">${fl.firstDate||'—'}</div>
+        <div class="ci-num">제${fl.firstNum||'?'}회 ${fl.firstTime||''}</div>
       </div>
-      <div class="perf-tags">
-        ${msBadges}
-        ${isSeen ? '<span class="badge blue">관람 ✓</span>' : ''}
+      <div class="checkin-cell">
+        <div class="ci-label">${out?'체크아웃 · 막공':'최근 공연'}</div>
+        <div class="ci-date">${fl.lastDate||'—'}</div>
+        <div class="ci-num">제${fl.lastNum||'?'}회 ${fl.lastTime||''}</div>
       </div>
-    </div>`;
-  }).join('') || '<div class="empty">공연 없음</div>';
+    </div>
+    ${mychips ? `<div class="detail-section"><h4>기념 공연</h4><div class="milestone-chips">${mychips}</div></div>` : ''}
+    <div class="detail-section"><h4>역할별 출연</h4>${roleBars}</div>
+  `;
+  document.getElementById('detailOverlay').classList.add('open');
 }
 
-/* ═══════════════════════════════
-   MILESTONES
-═══════════════════════════════ */
+function closeDetail(e) {
+  if (e && e.target !== document.getElementById('detailOverlay')) return;
+  document.getElementById('detailOverlay').classList.remove('open');
+}
+
+// ── ROLES ──
+function renderRoles() {
+  if (!DATA) return;
+  const { roleCasts } = DATA;
+  const q = document.getElementById('roleSearch').value.trim().toLowerCase();
+  const roles = Object.entries(roleCasts)
+    .filter(([r]) => !q || r.toLowerCase().includes(q))
+    .sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+
+  document.getElementById('roleList').innerHTML = roles.map(([role, actors]) => {
+    const sorted = Object.entries(actors).sort((a,b)=>b[1]-a[1]);
+    const total = sorted.reduce((s,[,c])=>s+c,0);
+    const maxN = sorted[0]?.[1] || 1;
+    const rows = sorted.map(([actor,n])=>
+      `<div class="role-actor-row">
+        <span style="min-width:80px;font-size:13px;color:var(--bright)">${actor}</span>
+        <div class="role-actor-bar"><div class="role-actor-bar-fill" style="width:${Math.round(n/maxN*100)}%"></div></div>
+        <span class="role-actor-n">${n}회</span>
+      </div>`
+    ).join('');
+    return `<div class="role-block">
+      <div class="role-block-header" onclick="toggleRole(this)">
+        <span class="role-block-title">${role}</span>
+        <span class="role-block-total">${sorted.length}명 · 총 ${total}회</span>
+      </div>
+      <div class="role-actors-list">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleRole(el) {
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// ── MILESTONES ──
 function renderMilestones() {
-  const done = [], upcoming = [];
-  DATA.actors.filter(a => a.count > 0).forEach(actor => {
-    MILESTONES.forEach(m => {
-      if (actor.count >= m) {
-        const s = DATA.shows[m-1];
-        done.push({ actor: actor.name, m, date: s?.date||'?', time: s?.time||'' });
-      }
-    });
-    const next = MILESTONES.find(m => m > actor.count);
-    if (next && !actor.checkout) upcoming.push({ actor: actor.name, current: actor.count, next, rem: next - actor.count });
-  });
+  if (!DATA) return;
+  const { milestones, checkoutSet } = DATA;
+  const n = parseInt(document.getElementById('mileTarget').value);
+  const list = Object.entries(milestones)
+    .filter(([,ms]) => ms[n])
+    .sort((a,b) => a[1][n].perfNum - b[1][n].perfNum);
 
-  done.sort((a,b) => b.m - a.m);
-  upcoming.sort((a,b) => a.rem - b.rem);
+  if (!list.length) {
+    document.getElementById('milestoneTable').innerHTML = `<div class="empty">${n}회 달성 배우가 없습니다</div>`;
+    return;
+  }
 
-  document.getElementById('ms-done').innerHTML = done.length
-    ? done.map(d => `
-      <div class="ms-row">
-        <div class="ms-icon">${d.m}</div>
-        <div class="ms-info"><div class="ms-name">${d.actor}</div><div class="ms-detail">${d.date} ${d.time}</div></div>
-        <span class="badge gold">${d.m}회</span>
-      </div>`).join('')
-    : '<div class="empty">기념 공연 없음</div>';
+  const rows = list.map(([actor, ms], i) => {
+    const m = ms[n];
+    const out = checkoutSet.has(actor);
+    return `<tr>
+      <td style="color:var(--muted);font-family:'DM Mono',monospace;font-size:11px">${i+1}</td>
+      <td style="font-size:14px;color:${out?'var(--muted)':'var(--bright)'}">${actor}${out?'<span class="badge badge-out">OUT</span>':''}</td>
+      <td class="mile-n">${n}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dim)">${m.date}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${m.time||''}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">제${m.perfNum}회</td>
+    </tr>`;
+  }).join('');
 
-  document.getElementById('ms-upcoming').innerHTML = upcoming.slice(0,10).map(u => `
-    <div class="ms-row">
-      <div class="ms-icon">${u.next}</div>
-      <div class="ms-info">
-        <div class="ms-name">${u.actor}</div>
-        <div class="ms-detail">현재 ${u.current}회 — <strong style="color:var(--gold)">${u.rem}회</strong> 남음</div>
-      </div>
-    </div>`).join('') || '<div class="empty">없음</div>';
+  document.getElementById('milestoneTable').innerHTML = `
+    <table class="mile-table">
+      <thead><tr><th>#</th><th>배우</th><th>기념회차</th><th>날짜</th><th>시간</th><th>회차</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
 }
 
-/* ═══════════════════════════════
-   MY RECORDS
-═══════════════════════════════ */
-function renderMy() {
-  const rec   = getMyRecords();
-  const seen  = DATA.shows.filter(s => rec[s.num]?.seen);
-  const total = seen.length;
-  const day   = seen.filter(s => s.time==='낮').length;
-  const night = seen.filter(s => s.time==='밤').length;
-  const first = seen[0];
-  const last  = seen[seen.length-1];
+// ── SCHEDULE ──
+function renderSchedule() {
+  if (!DATA) return;
+  const { perfs } = DATA;
+  const q = (document.getElementById('schedSearch').value || '').trim().toLowerCase();
+  const filter = document.getElementById('schedFilter').value;
+  const mySet = new Set(MY_LOG.map(l => l.perfNum));
 
-  document.getElementById('my-total').textContent = total;
-  document.getElementById('my-day').textContent   = day;
-  document.getElementById('my-night').textContent = night;
-  document.getElementById('my-first').textContent = first ? `#${first.num} ${first.date}` : '—';
-  document.getElementById('my-last').textContent  = last  ? `#${last.num} ${last.date}`  : '—';
-  document.getElementById('s-my').textContent     = total;
+  let list = Object.values(perfs).sort((a,b) => b.num - a.num);
+  if (filter === 'mine') list = list.filter(p => mySet.has(p.num));
+  if (q) list = list.filter(p =>
+    p.date?.includes(q) || p.cast.some(c => c.actor.toLowerCase().includes(q) || c.role.includes(q))
+  );
 
-  /* actor counts from seen shows */
-  const myActorCounts = {};
-  seen.forEach(() => {
-    DATA.roles.forEach(role => {
-      role.actors.forEach(ra => {
-        if (ra.count > 0) myActorCounts[ra.name] = (myActorCounts[ra.name]||0) + 1;
+  if (!list.length) {
+    document.getElementById('perfList').innerHTML = '<div class="empty">공연 없음</div>';
+    return;
+  }
+
+  document.getElementById('perfList').innerHTML = list.slice(0, 200).map(p => {
+    const isMine = mySet.has(p.num);
+    // deduplicate actors
+    const actors = [...new Set(p.cast.map(c => c.actor))];
+    const chips = actors.slice(0,8).map(a => `<span class="perf-chip">${a}</span>`).join('');
+    return `<div class="perf-row" onclick="toggleMyLogFromSchedule(${p.num})">
+      <span class="perf-num">${p.num}</span>
+      <span class="perf-date">${p.date}</span>
+      <span class="perf-time">${p.time}</span>
+      <div class="perf-actors">${chips}</div>
+      ${isMine ? '<span class="perf-mine">✓ 내 기록</span>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function toggleMyLogFromSchedule(perfNum) {
+  const idx = MY_LOG.findIndex(l => l.perfNum === perfNum);
+  if (idx >= 0) {
+    MY_LOG.splice(idx, 1);
+  } else if (DATA?.perfs[perfNum]) {
+    const p = DATA.perfs[perfNum];
+    MY_LOG.push({ perfNum, date: p.date, time: p.time, memo: '' });
+  }
+  saveMyLog();
+  renderSchedule();
+  renderMyLog();
+  document.getElementById('statMine').textContent = MY_LOG.length;
+}
+
+// ── MY LOG ──
+function addMyLog() {
+  const numInput = document.getElementById('logPerf');
+  const memoInput = document.getElementById('logMemo');
+  const num = parseInt(numInput.value);
+  if (!num || num < 1) return;
+  if (MY_LOG.find(l => l.perfNum === num)) {
+    alert('이미 기록된 회차입니다.');
+    return;
+  }
+  const perf = DATA?.perfs[num];
+  MY_LOG.push({
+    perfNum: num,
+    date: perf?.date || '',
+    time: perf?.time || '',
+    memo: memoInput.value.trim(),
+  });
+  MY_LOG.sort((a,b) => b.perfNum - a.perfNum);
+  saveMyLog();
+  numInput.value = '';
+  memoInput.value = '';
+  renderMyLog();
+  renderSchedule();
+  document.getElementById('statMine').textContent = MY_LOG.length;
+}
+
+function deleteMyLog(perfNum) {
+  MY_LOG = MY_LOG.filter(l => l.perfNum !== perfNum);
+  saveMyLog();
+  renderMyLog();
+  renderSchedule();
+  document.getElementById('statMine').textContent = MY_LOG.length;
+}
+
+function saveMyLog() {
+  localStorage.setItem('snm_mylog', JSON.stringify(MY_LOG));
+}
+
+function renderMyLog() {
+  document.getElementById('myLogCount').textContent = MY_LOG.length + '회';
+
+  // My stats
+  if (DATA && MY_LOG.length) {
+    const myNums = new Set(MY_LOG.map(l => l.perfNum));
+    // actor freq in my logs
+    const myActors = {};
+    const myRoles = {};
+    myNums.forEach(n => {
+      const p = DATA.perfs[n];
+      if (!p) return;
+      const seen = new Set();
+      p.cast.forEach(({ role, actor }) => {
+        if (!seen.has(actor)) { seen.add(actor); myActors[actor] = (myActors[actor]||0)+1; }
+        myRoles[role] = (myRoles[role]||0)+1;
       });
     });
+    const topActors = Object.entries(myActors).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const topRoles = Object.entries(myRoles).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    document.getElementById('myStatsGrid').innerHTML = `
+      <div class="my-stat-card"><div class="n">${MY_LOG.length}</div><div class="l">내가 본 공연</div></div>
+      <div class="my-stat-card"><div class="n">${Object.keys(myActors).length}</div><div class="l">만난 배우</div></div>
+      <div class="my-stat-card" style="grid-column:span 2">
+        <div class="l" style="margin-bottom:8px">자주 본 배우</div>
+        ${topActors.map(([a,n])=>`<span style="font-size:13px;color:var(--bright);margin-right:12px">${a} <span style="color:var(--gold);font-family:'DM Mono',monospace;font-size:11px">${n}</span></span>`).join('')}
+      </div>
+    `;
+  } else {
+    document.getElementById('myStatsGrid').innerHTML = '';
+  }
+
+  if (!MY_LOG.length) {
+    document.getElementById('myLogList').innerHTML = '<div class="empty">아직 기록된 공연이 없습니다</div>';
+    return;
+  }
+
+  document.getElementById('myLogList').innerHTML = MY_LOG.map(l => {
+    const perf = DATA?.perfs[l.perfNum];
+    const actors = perf ? [...new Set(perf.cast.map(c=>c.actor))] : [];
+    const chips = actors.slice(0,6).map(a=>`<span class="mylog-actor-chip">${a}</span>`).join('');
+    return `<div class="mylog-item">
+      <div class="mylog-perf">${l.perfNum}</div>
+      <div class="mylog-info">
+        <div class="mylog-date">${l.date||'날짜 미확인'} ${l.time||''}</div>
+        ${l.memo?`<div class="mylog-memo">${l.memo}</div>`:''}
+        ${chips?`<div class="mylog-actor-chips">${chips}</div>`:''}
+      </div>
+      <button class="mylog-del" onclick="deleteMyLog(${l.perfNum})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function setSyncStatus(state) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  dot.className = 'sync-dot';
+  if (state === 'live') {
+    dot.classList.add('live');
+    txt.textContent = new Date().toLocaleTimeString('ko-KR', { hour:'2-digit', minute:'2-digit' });
+  } else if (state === 'loading') {
+    txt.textContent = 'loading...';
+  } else {
+    txt.textContent = 'error';
+  }
+}
+
+function openSettings() {
+  // Reset to password gate every time
+  document.getElementById('pwGate').style.display = 'block';
+  document.getElementById('pwContent').style.display = 'none';
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').style.display = 'none';
+  document.getElementById('settingsModal').classList.add('open');
+  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+}
+
+function checkPw() {
+  const val = document.getElementById('pwInput').value;
+  if (val === 'aozlxks') {
+    document.getElementById('pwGate').style.display = 'none';
+    document.getElementById('pwContent').style.display = 'block';
+    document.getElementById('sheetIdInput').value = CFG.sheetId;
+    document.getElementById('castSheetName').value = CFG.castSheet;
+    document.getElementById('actorSheetName').value = CFG.actorSheet;
+  } else {
+    document.getElementById('pwError').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+}
+
+function closeSettings() {
+  document.getElementById('settingsModal').classList.remove('open');
+}
+
+function saveSettings() {
+  CFG.sheetId = document.getElementById('sheetIdInput').value.trim();
+  CFG.castSheet = document.getElementById('castSheetName').value.trim() || '캐스팅 기록';
+  CFG.actorSheet = document.getElementById('actorSheetName').value.trim() || '배우 정보';
+  localStorage.setItem('snm_sheetId', CFG.sheetId);
+  localStorage.setItem('snm_castSheet', CFG.castSheet);
+  localStorage.setItem('snm_actorSheet', CFG.actorSheet);
+  closeSettings();
+  loadData();
+}
+
+// Secret: click logo 5 times to open settings
+(function initLogoSecret() {
+  let clicks = 0, timer;
+  document.getElementById('logoBtn').addEventListener('click', () => {
+    clicks++;
+    clearTimeout(timer);
+    timer = setTimeout(() => { clicks = 0; }, 1500);
+    if (clicks >= 5) { clicks = 0; openSettings(); }
   });
-
-  /* per-show actor data: build a map showNum → set of actors from casting */
-  /* Since we don't have per-show casting in demo, just count proportionally */
-  const myActorList = Object.entries(myActorCounts).sort((a,b) => b[1]-a[1]).slice(0,10);
-  const maxA = myActorList[0]?.[1] || 1;
-
-  document.getElementById('my-actor-bars').innerHTML = myActorList.length
-    ? myActorList.map(([name, cnt]) => `
-      <div class="bar-row">
-        <div class="bar-name">${name}</div>
-        <div class="bar-track"><div class="bar-fill my" style="width:${Math.round(cnt/maxA*100)}%"></div></div>
-        <div class="bar-num my">${cnt}</div>
-      </div>`).join('')
-    : '<div class="empty">관람 기록을 추가하면 통계가 나타납니다</div>';
-
-  document.getElementById('my-log').innerHTML = seen.length
-    ? [...seen].reverse().map(s => {
-        const note = rec[s.num]?.note || '';
-        const timeClr = s.time==='밤' ? 'rgba(200,169,110,0.7)' : 'rgba(140,180,230,0.7)';
-        return `
-        <div class="seen-log-row">
-          <div class="seen-log-num">${s.num}</div>
-          <div style="flex:1">
-            <div style="font-size:12px;color:var(--text)">${s.date} <span style="color:${timeClr}">${s.time}</span></div>
-            ${note ? `<div style="font-size:10px;color:var(--muted);margin-top:2px">${note}</div>` : ''}
-          </div>
-          <div style="display:flex;gap:6px;align-items:center">
-            <button class="btn btn-sm" onclick="openShowModal(${s.num});event.stopPropagation()">메모</button>
-            <button class="del-btn" onclick="toggleSeen(${s.num})" title="기록 삭제">✕</button>
-          </div>
-        </div>`;
-      }).join('')
-    : '<div class="empty">공연 일정 탭에서 관람한 회차를 클릭하여 기록해보세요</div>';
-}
-
-/* ═══════════════════════════════
-   MODALS
-═══════════════════════════════ */
-function openActorModal(name) {
-  const actor = DATA.actors.find(a => a.name === name);
-  if (!actor) return;
-  const ms = MILESTONES.filter(m => m <= actor.count);
-  const actorRoles = DATA.roles.map(role => {
-    const ra = role.actors.find(a => a.name === name);
-    return ra && ra.count > 0 ? { roleName: role.name, type: ra.type, count: ra.count } : null;
-  }).filter(Boolean).sort((a,b) => b.count - a.count);
-
-  document.getElementById('actor-modal-body').innerHTML = `
-    <div class="modal-name">${actor.name}</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:14px">${actor.count}회 출연${actor.checkout?' · 체크아웃':''}</div>
-    ${actor.checkinDate ? `<span class="badge checkin" style="margin-bottom:4px">첫공 #${actor.checkinNum} (${actor.checkinDate} ${actor.checkinTime})</span>` : ''}
-    ${actor.checkout ? `<span class="badge checkout" style="margin-bottom:4px">막공 #${actor.checkoutShowNum||'?'} (${actor.checkoutDate||'?'})</span>` : ''}
-    ${ms.length ? `<div style="margin:12px 0">${ms.map(m=>`<span class="badge gold">${m}회</span>`).join('')}</div>` : ''}
-    ${!actor.checkout ? (() => { const next = MILESTONES.find(m=>m>actor.count); return next ? `<div style="font-size:11px;color:var(--muted);margin-bottom:12px">다음 기념: <span style="color:var(--gold)">${next}회</span> (${next-actor.count}회 남음)</div>` : ''; })() : ''}
-    ${actorRoles.length ? `
-      <div class="divider"></div>
-      <div class="sec" style="margin-bottom:10px">출연 역할</div>
-      ${actorRoles.map(r=>`
-        <div class="role-item">
-          <div><span>${r.roleName}</span><span class="role-type">${r.type}</span></div>
-          <span class="role-cnt">${r.count}회</span>
-        </div>`).join('')}
-    ` : ''}
-  `;
-  document.getElementById('actor-modal').classList.add('open');
-}
-
-function openShowModal(num) {
-  const s   = DATA.shows.find(s => s.num === num);
-  if (!s) return;
-  const rec  = getMyRecords();
-  const isSeen = !!rec[num]?.seen;
-  const note   = rec[num]?.note || '';
-  const timeClr = s.time==='밤' ? 'rgba(200,169,110,0.7)' : 'rgba(140,180,230,0.7)';
-
-  document.getElementById('show-modal-body').innerHTML = `
-    <div class="modal-name">#${s.num} ${s.date}</div>
-    <div style="font-size:13px;color:${timeClr};margin-bottom:16px">${s.time === '밤' ? '🌙 밤공연' : '☀ 낮공연'}</div>
-    <div style="margin-bottom:16px">
-      <button class="btn ${isSeen?'':'btn-sm'}" style="${isSeen?'border-color:rgba(100,170,220,0.5);color:var(--blue);background:rgba(100,170,220,0.08)':''}" onclick="toggleSeen(${num});renderShowModal(${num})">
-        ${isSeen ? '✓ 관람 기록됨 — 취소하기' : '+ 관람 기록 추가'}
-      </button>
-    </div>
-    ${isSeen ? `
-      <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-bottom:6px">메모</div>
-      <textarea class="note-input" id="modal-note" placeholder="이날 공연에 대한 메모를 남겨보세요...">${note}</textarea>
-      <button class="btn btn-sm" style="margin-top:8px" onclick="saveNote(${num},document.getElementById('modal-note').value);alert('저장됐어요!')">메모 저장</button>
-    ` : ''}
-    <div class="divider"></div>
-    <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-bottom:8px">기념 공연 여부</div>
-    ${MILESTONES.filter(m=>m===num).length ? MILESTONES.filter(m=>m===num).map(m=>`<span class="badge gold">${m}회 기념 공연</span>`).join('') : '<div style="font-size:11px;color:var(--muted)">해당 없음</div>'}
-  `;
-  document.getElementById('show-modal').classList.add('open');
-}
-
-function renderShowModal(num) {
-  openShowModal(num);
-}
-
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function closeModalOuter(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
-
-/* ═══════════════════════════════
-   TABS
-═══════════════════════════════ */
-function switchTab(name, btn) {
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('pane-' + name).classList.add('active');
-  if (name === 'my') renderMy();
-}
-
-/* ═══════════════════════════════
-   ADMIN PANEL
-   - 제목 5번 클릭 → 비밀번호 확인
-   - 비밀번호: snmadmin (원하면 바꾸세요)
-   - 시트 ID는 localStorage에 저장
-═══════════════════════════════ */
-const ADMIN_PW   = 'snmadmin';
-const LS_SHEET   = 'snm_sheet_id';
-let titleClicks  = 0;
-let titleTimer   = null;
-
-document.getElementById('admin-trigger').addEventListener('click', () => {
-  titleClicks++;
-  clearTimeout(titleTimer);
-  titleTimer = setTimeout(() => { titleClicks = 0; }, 2000);
-  if (titleClicks >= 5) {
-    titleClicks = 0;
-    const pw = prompt('관리자 비밀번호를 입력하세요');
-    if (pw === ADMIN_PW) openAdmin();
-    else if (pw !== null) alert('비밀번호가 틀렸습니다');
+})();
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeSettings();
+    document.getElementById('detailOverlay').classList.remove('open');
   }
 });
 
-function openAdmin() {
-  const saved = localStorage.getItem(LS_SHEET) || '';
-  document.getElementById('sheetId').value = saved;
-  document.getElementById('admin-panel').style.display = 'block';
-}
-
-function closeAdmin() {
-  document.getElementById('admin-panel').style.display = 'none';
-}
-
-function adminSave() {
-  const id = document.getElementById('sheetId').value.trim();
-  if (!id) return alert('시트 ID를 입력해주세요');
-  localStorage.setItem(LS_SHEET, id);
-  closeAdmin();
-  loadSheet();
-}
-
-/* ═══════════════════════════════
-   SHEET LOADING (id from localStorage)
-═══════════════════════════════ */
-function getSheetId() {
-  return localStorage.getItem(LS_SHEET) || '';
-}
-
-loadSheet = async function() {
-  const id = getSheetId();
-  if (!id) { loadDemo(); return; }
-
-  const inp = document.getElementById('sheetId');
-  if (inp) inp.value = id;
-
-  setStatus('loading', '구글 시트 연결 중...');
-
-  async function fetchSheet(sheetName) {
-    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`${sheetName} 응답 오류`);
-    const text = await res.text();
-    return JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);\s*$/, ''));
-  }
-
-  try {
-    // 1) 캐스팅 일정 시트로 공연·배우·역할 파싱
-    const castingJson = await fetchSheet('캐스팅 일정');
-    parseCastingSheet(castingJson);
-
-    // 2) 출연 통계 시트에서 체크아웃 정보만 추가 반영
-    try {
-      const statsJson = await fetchSheet('출연 통계');
-      parseCheckoutSheet(statsJson);
-    } catch(e) { /* 없어도 무관 */ }
-
-    setStatus('ok', `연결 완료 ✓  ${DATA.shows.length}회 공연 · 배우 ${DATA.actors.length}명 — ${new Date().toLocaleTimeString('ko-KR')}`);
-    renderAll();
-  } catch(e) {
-    setStatus('err', `시트 접근 실패 (${e.message}) — 데모 데이터로 표시합니다. 시트 공유 설정을 확인해주세요.`);
-    loadDemo();
-  }
-};
-
-/* ═══════════════════════════════
-   INIT + AUTO-REFRESH (5분마다)
-═══════════════════════════════ */
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
 (function init() {
-  const saved = getSheetId();
-  if (saved) {
-    loadSheet();
+  renderMyLog(); // show empty state first
+  if (CFG.sheetId) {
+    loadData();
+    setInterval(loadData, 5 * 60 * 1000); // auto-refresh every 5 min
   } else {
-    loadDemo();
-    setStatus('', '제목을 5번 클릭하면 시트를 연결할 수 있습니다');
+    // show setup prompt
+    ['overview','actors','roles','milestones','schedule'].forEach(t => {
+      const el = document.getElementById('tab-' + t);
+      if (el) el.innerHTML = `<div class="loading"><span class="spin"></span>시트 ID를 설정하면 데이터가 표시됩니다<br><br><button class="btn-add" onclick="openSettings()" style="margin-top:8px">⚙ 설정 열기</button></div>`;
+    });
   }
-  /* auto-refresh every 5 minutes */
-  setInterval(() => { if (getSheetId()) loadSheet(); }, 5 * 60 * 1000);
 })();
 </script>
 </body>
