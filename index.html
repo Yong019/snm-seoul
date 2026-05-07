@@ -585,9 +585,11 @@ function parseCastingSheet(json) {
   }
   shows.sort((a,b) => a.num - b.num);
 
-  // 배우별 출연 횟수 & 첫/막 공연 계산
-  const actorMap = {}; // name → { count, firstShow, lastShow }
-  const roleMap  = {}; // roleName → { actorName → count }
+  // 배우별 출연 회차 set & 첫/막 공연 계산
+  // showSet: name → Set of show nums (중복 제거용)
+  const showSetMap = {}; // name → Set<num>
+  const showObjMap = {}; // name → { firstShow, lastShow }
+  const roleMap    = {}; // roleName → { actorName → count }
   const ROLES_START = 3;
 
   for (let r = ROLES_START; r < rows.length; r++) {
@@ -602,13 +604,18 @@ function parseCastingSheet(json) {
       // 셀에 여러 배우가 있을 수 있음 (예: "크리스 > 니콜라스")
       const names = raw.split('>').map(n => n.trim()).filter(n => n && n !== '-');
       names.forEach(name => {
-        if (!actorMap[name]) actorMap[name] = { count: 0, firstShow: null, lastShow: null };
-        actorMap[name].count++;
-        if (!actorMap[name].firstShow || s.num < actorMap[name].firstShow.num)
-          actorMap[name].firstShow = s;
-        if (!actorMap[name].lastShow || s.num > actorMap[name].lastShow.num)
-          actorMap[name].lastShow = s;
+        // 역할별 출연 횟수 (역할 통계용 — 역할은 중복 허용)
         roleMap[roleName][name] = (roleMap[roleName][name] || 0) + 1;
+
+        // 배우 총 출연 횟수는 회차 단위 중복 제거
+        if (!showSetMap[name]) {
+          showSetMap[name] = new Set();
+          showObjMap[name] = { firstShow: null, lastShow: null };
+        }
+        showSetMap[name].add(s.num);
+        const info = showObjMap[name];
+        if (!info.firstShow || s.num < info.firstShow.num) info.firstShow = s;
+        if (!info.lastShow  || s.num > info.lastShow.num)  info.lastShow  = s;
       });
     });
   }
@@ -619,16 +626,19 @@ function parseCastingSheet(json) {
 
   DATA.shows = shows.map(s => ({ num: s.num, date: s.date, time: s.time }));
 
-  DATA.actors = Object.entries(actorMap).map(([name, info]) => ({
-    name,
-    count: info.count,
-    checkout: !!existingCheckouts[name],
-    checkinNum:   info.firstShow?.num  || null,
-    checkinDate:  info.firstShow?.date || null,
-    checkinTime:  info.firstShow?.time || null,
-    checkoutShowNum:  existingCheckouts[name]?.checkoutShowNum || null,
-    checkoutDate:     existingCheckouts[name]?.checkoutDate    || null,
-  })).sort((a,b) => b.count - a.count);
+  DATA.actors = Object.entries(showSetMap).map(([name, numSet]) => {
+    const info = showObjMap[name];
+    return {
+      name,
+      count: numSet.size,   // ← 회차 기준 중복 제거된 실제 출연 횟수
+      checkout: !!existingCheckouts[name],
+      checkinNum:  info.firstShow?.num  || null,
+      checkinDate: info.firstShow?.date || null,
+      checkinTime: info.firstShow?.time || null,
+      checkoutShowNum: existingCheckouts[name]?.checkoutShowNum || null,
+      checkoutDate:    existingCheckouts[name]?.checkoutDate    || null,
+    };
+  }).sort((a,b) => b.count - a.count);
 
   DATA.roles = Object.entries(roleMap).map(([name, actorCounts]) => ({
     name,
